@@ -1,0 +1,984 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NORDLIGHT HALO 1</title>
+<meta name="description" content="HALO 1 by NORDLIGHT (a fictional brand): a carbon-rim marathon racer. Live 3D model, scroll teardown, specs, record run and materials.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400..600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #e7ecee;
+    --ground-2: #dde4e7;
+    --surface: #f4f6f7;
+    --ink: #101417;
+    --ink-2: #3c464d;
+    --muted: #66727a;
+    --line: #c7d0d5;
+    --lime: #c4ec2f;
+    --lime-ink: #111a00;
+    --lime-text: #4f6b00;
+    --carbon: #1d2226;
+    --focus: #3a6df0;
+    --display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --gutter: clamp(16px, 4vw, 56px);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #13191d;
+      --ground-2: #182025;
+      --surface: #1c252b;
+      --ink: #e8eef1;
+      --ink-2: #bcc7cd;
+      --muted: #8d9aa2;
+      --line: #2c3840;
+      --lime: #c9f24b;
+      --lime-ink: #10170a;
+      --lime-text: #c9f24b;
+      --carbon: #0b0e10;
+      --focus: #8fb0ff;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #13191d;
+    --ground-2: #182025;
+    --surface: #1c252b;
+    --ink: #e8eef1;
+    --ink-2: #bcc7cd;
+    --muted: #8d9aa2;
+    --line: #2c3840;
+    --lime: #c9f24b;
+    --lime-ink: #10170a;
+    --lime-text: #c9f24b;
+    --carbon: #0b0e10;
+    --focus: #8fb0ff;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: auto; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font: 16px/1.55 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  .mono { font-family: var(--mono); }
+  .eyebrow {
+    font: 500 12px/1.2 var(--mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- header ---------- */
+  .bar {
+    position: fixed; z-index: 30; left: 0; right: 0; top: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) var(--gutter) 14px;
+    display: flex; align-items: center; gap: 24px;
+    background: color-mix(in srgb, var(--ground) 82%, transparent);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 18px/1 var(--display); font-stretch: 112%; font-variation-settings: "wdth" 112; letter-spacing: .06em; }
+  .brand svg { width: 26px; height: 26px; }
+  .nav { display: flex; gap: 22px; margin-left: auto; }
+  .nav a { text-decoration: none; font: 500 13px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+  .nav a:hover { color: var(--ink); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid transparent;
+    font: 600 15px/1 var(--body); text-decoration: none; cursor: pointer;
+    background: var(--lime); color: var(--lime-ink);
+  }
+  .btn:hover { filter: brightness(1.04); }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn.small { height: 38px; padding: 0 16px; font-size: 14px; }
+
+  /* ---------- stage (sticky 3D) ---------- */
+  #stage { position: relative; height: 640vh; }
+  .sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: grab; outline: none; }
+  #gl.dragging { cursor: grabbing; }
+  .floor-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(60% 45% at 62% 62%, var(--surface), transparent 70%);
+  }
+  #ann { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  #ann line { stroke: var(--ink); stroke-width: 1; }
+  #ann circle { fill: var(--lime); stroke: var(--ink); stroke-width: 1.25; }
+  .tag {
+    position: absolute; left: 0; top: 0; pointer-events: none;
+    font: 500 12px/1.3 var(--mono); letter-spacing: .02em; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 6px 9px; border-radius: 4px; white-space: nowrap;
+    opacity: 0; will-change: transform, opacity;
+  }
+  .tag b { display: block; font-weight: 500; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+  .hero {
+    position: absolute; left: var(--gutter); top: 0; bottom: 0;
+    width: min(460px, 40vw);
+    display: flex; flex-direction: column; justify-content: center; gap: 18px;
+    padding-top: 40px;
+  }
+  .hero h1 {
+    margin: 0; font-family: var(--display); font-weight: 900; font-stretch: 62%; font-variation-settings: "wdth" 62;
+    font-size: clamp(88px, 11vw, 176px); line-height: .8; letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .hero h1 span { color: var(--lime-text); }
+  .hero .lede { margin: 0; font: 600 clamp(20px, 2.1vw, 26px)/1.2 var(--display); font-stretch: 100%; font-variation-settings: "wdth" 100; max-width: 22ch; }
+  .hero p.body { margin: 0; color: var(--ink-2); max-width: 44ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fact { font: 500 12px/1 var(--mono); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; color: var(--ink-2); background: color-mix(in srgb, var(--surface) 70%, transparent); }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hint { font: 500 12px/1.4 var(--mono); color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  .hint i { display: inline-block; width: 22px; height: 1px; background: var(--muted); }
+
+  .cap {
+    position: absolute; left: var(--gutter); top: 50%;
+    width: min(380px, 34vw); transform: translateY(-50%);
+    opacity: 0; pointer-events: none;
+    display: grid; gap: 12px;
+  }
+  .cap .step { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  .cap .step::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 1px var(--ink); }
+  .cap h2 { margin: 0; font: 800 clamp(36px, 4.4vw, 60px)/.92 var(--display); font-stretch: 70%; font-variation-settings: "wdth" 70; text-wrap: balance; }
+  .cap p { margin: 0; color: var(--ink-2); max-width: 40ch; }
+  .cap .num { font: 500 13px/1.4 var(--mono); color: var(--ink); border-top: 1px solid var(--line); padding-top: 10px; }
+
+  .progress { position: absolute; right: var(--gutter); top: 50%; transform: translateY(-50%); display: grid; gap: 10px; }
+  .progress span { width: 3px; height: 26px; background: var(--line); border-radius: 2px; overflow: hidden; position: relative; }
+  .progress span i { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--ink); }
+
+  .loader { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); font: 500 12px/1 var(--mono); color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  .loader .track { width: 120px; height: 2px; background: var(--line); position: relative; overflow: hidden; }
+  .loader .track i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--ink); }
+  .fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: 80px var(--gutter); }
+  .fallback img { width: min(900px, 100%); border-radius: 8px; }
+
+  /* ---------- content sections ---------- */
+  main.after { position: relative; z-index: 2; background: var(--ground); }
+  section.band { padding-block: clamp(72px, 10vw, 140px); padding-inline: var(--gutter); }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px 48px; align-items: end; margin-bottom: 48px; }
+  .sec-head h2 { margin: 8px 0 0; font: 800 clamp(44px, 6vw, 84px)/.9 var(--display); font-stretch: 66%; font-variation-settings: "wdth" 66; text-wrap: balance; }
+  .sec-head p { margin: 0; color: var(--ink-2); max-width: 56ch; }
+
+  /* spec sheet */
+  .specs { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+  table.spec { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  table.spec th, table.spec td { text-align: left; vertical-align: top; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  table.spec th { width: 34%; font: 500 12px/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-right: 16px; }
+  table.spec td { font-size: 16px; }
+  table.spec td .big { font: 700 28px/1 var(--display); font-stretch: 80%; font-variation-settings: "wdth" 80; }
+  .spec-fig { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
+  .spec-fig svg { width: 100%; height: auto; display: block; }
+  .spec-fig svg .lbl { font: 500 11px var(--mono); fill: var(--muted); }
+  .spec-fig svg .val { font: 600 15px var(--mono); fill: var(--ink); }
+  .spec-fig svg .edge { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  .spec-fig svg .rail { fill: none; stroke: var(--carbon); stroke-width: 3; }
+  .spec-fig svg .dim { stroke: var(--muted); stroke-width: 1; }
+  .spec-fig figcaption { margin-top: 12px; font: 500 12px/1.5 var(--mono); color: var(--muted); }
+
+  /* record */
+  .record { background: var(--carbon); color: #e9eef0; }
+  .record .sec-head p, .record .eyebrow { color: #a7b3ba; }
+  .record-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+  .time { font: 900 clamp(72px, 12vw, 168px)/.85 var(--display); font-stretch: 62%; font-variation-settings: "wdth" 62; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .time small { display: block; font: 500 13px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #c9f24b; margin-top: 16px; }
+  .record blockquote { margin: 32px 0 0; font: 500 clamp(20px, 2.2vw, 26px)/1.35 var(--body); max-width: 30ch; }
+  .record blockquote cite { display: block; margin-top: 12px; font: 500 12px/1.4 var(--mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: #a7b3ba; }
+  .record p.story { color: #c5d0d6; max-width: 56ch; margin: 24px 0 0; }
+  table.splits { width: 100%; border-collapse: collapse; font: 500 14px/1.2 var(--mono); font-variant-numeric: tabular-nums; }
+  table.splits th, table.splits td { padding: 11px 0; border-bottom: 1px solid #2d383f; text-align: left; }
+  table.splits th { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #8e9ba3; font-weight: 500; }
+  table.splits td:last-child, table.splits th:last-child { text-align: right; }
+  table.splits tr.fast td:nth-child(2) { color: #c9f24b; }
+  .halves { display: flex; gap: 24px; margin-top: 18px; font: 500 13px/1.4 var(--mono); color: #a7b3ba; flex-wrap: wrap; }
+  .halves b { color: #e9eef0; font-weight: 500; }
+
+  /* materials */
+  .mats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 40px; }
+  .mat figure { margin: 0; }
+  .mat .ph { aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; border-radius: 6px; background: var(--ground-2); }
+  .mat .ph img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+  .mat:hover .ph img { transform: scale(1.03); }
+  .mat h3 { margin: 18px 0 6px; font: 800 30px/1 var(--display); font-stretch: 72%; font-variation-settings: "wdth" 72; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .mat h3 .mono { font-size: 12px; font-weight: 500; letter-spacing: .1em; color: var(--muted); }
+  .mat p { margin: 0; color: var(--ink-2); max-width: 52ch; }
+
+  /* studio strip */
+  .studio { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .studio img { width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 4px; display: block; background: var(--ground-2); }
+  .studio figcaption { font: 500 11px/1.4 var(--mono); color: var(--muted); margin-top: 6px; letter-spacing: .06em; text-transform: uppercase; }
+  .studio figure { margin: 0; }
+
+  /* draw / cta */
+  .draw { background: var(--surface); border-top: 1px solid var(--line); }
+  .draw-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .draw h2 { margin: 10px 0 16px; font: 900 clamp(56px, 8vw, 116px)/.86 var(--display); font-stretch: 62%; font-variation-settings: "wdth" 62; text-wrap: balance; }
+  .draw p { color: var(--ink-2); margin: 0; max-width: 46ch; }
+  form.entry { display: grid; gap: 18px; background: var(--ground); border: 1px solid var(--line); border-radius: 8px; padding: 24px; }
+  .price { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .price strong { font: 800 44px/1 var(--display); font-stretch: 80%; font-variation-settings: "wdth" 80; }
+  .price span { font: 500 12px/1.4 var(--mono); color: var(--muted); text-align: right; }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  legend { font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .sizes { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 6px; }
+  .sizes input { position: absolute; opacity: 0; pointer-events: none; }
+  .sizes label { display: grid; place-items: center; height: 42px; border: 1px solid var(--line); border-radius: 4px; font: 500 14px/1 var(--mono); cursor: pointer; background: var(--surface); font-variant-numeric: tabular-nums; }
+  .sizes input:checked + label { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .sizes input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .fine { font: 500 12px/1.5 var(--mono); color: var(--muted); margin: 0; }
+  .confirm { font: 500 14px/1.5 var(--body); padding: 12px 14px; border-radius: 6px; background: color-mix(in srgb, var(--lime) 28%, var(--surface)); border: 1px solid var(--line); }
+
+  footer { padding: 40px var(--gutter) calc(40px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--ground); position: relative; z-index: 2; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; font: 500 12px/1.6 var(--mono); color: var(--muted); }
+  footer button { font: inherit; color: var(--ink-2); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  #fps { position: fixed; z-index: 40; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); font: 500 12px/1.4 var(--mono); background: var(--carbon); color: #e9eef0; padding: 8px 10px; border-radius: 4px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .nav { display: none; }
+    .hero { width: auto; right: var(--gutter); justify-content: flex-start; padding-top: calc(env(safe-area-inset-top, 0px) + 84px); gap: 12px; }
+    .hero h1 { font-size: clamp(76px, 24vw, 130px); }
+    .hero p.body, .hint { display: none; }
+    .cap { left: var(--gutter); right: var(--gutter); width: auto; top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: none;
+      background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line); border-radius: 8px; padding: 16px; gap: 8px; }
+    .cap h2 { font-size: 34px; }
+    .cap p { font-size: 14px; }
+    .progress { display: none; }
+    .floor-glow { background: radial-gradient(80% 40% at 50% 58%, var(--surface), transparent 70%); }
+    .sec-head, .specs, .record-grid, .draw-grid { grid-template-columns: minmax(0, 1fr); }
+    .mats { grid-template-columns: minmax(0, 1fr); gap: 44px; }
+    .studio { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tag { font-size: 11px; padding: 5px 7px; }
+  }
+  @media (max-width: 420px) {
+    .facts .fact:nth-child(3) { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mat .ph img { transition: none; }
+  }
+</style>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="NORDLIGHT home">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="57 12" transform="rotate(-62 16 16)"/><circle cx="24.6" cy="8.6" r="2.4" fill="currentColor"/></svg>
+    NORDLIGHT
+  </a>
+  <nav class="nav" aria-label="Sections">
+    <a href="#inside" class="to-inside">Inside</a>
+    <a href="#specs">Specs</a>
+    <a href="#record">Record</a>
+    <a href="#materials">Materials</a>
+  </nav>
+  <a class="btn small" href="#draw">Enter the draw</a>
+</header>
+
+<div id="top"></div>
+<section id="stage" aria-label="HALO 1 interactive model">
+  <div class="sticky">
+    <div class="floor-glow"></div>
+    <canvas id="gl" tabindex="0" aria-label="3D model of the HALO 1. Drag or use the arrow keys to turn it."></canvas>
+    <svg id="ann" aria-hidden="true"></svg>
+    <div id="tags" aria-hidden="true"></div>
+
+    <div class="hero" id="hero">
+      <div class="eyebrow">NORDLIGHT Race · Season 26</div>
+      <h1>HALO<span>&thinsp;1</span></h1>
+      <p class="lede">Carbon around the foot. Not under it.</p>
+      <p class="body">A carbon rim wraps the foam instead of splitting it. Your forefoot sinks into bare AERFOAM&nbsp;X; the rail catches you at the edges and rolls you forward.</p>
+      <div class="facts"><span class="fact">$325</span><span class="fact">142 g · US M9</span><span class="fact">39 / 32 mm</span></div>
+      <div class="cta-row">
+        <a class="btn" href="#draw">Enter the draw</a>
+        <a class="btn ghost" href="#inside" id="seeInside">See inside</a>
+      </div>
+      <div class="hint"><i></i>Drag to turn it. Scroll to take it apart.</div>
+    </div>
+
+    <div class="cap" data-range="0.11 0.31" id="inside">
+      <div class="step">Rocker</div>
+      <h2>Tip over. Don't push off.</h2>
+      <p>The toe sits 34&nbsp;mm off the ground. The roll starts at 59% of the length, just behind the metatarsal heads, so the shoe tips you forward at the exact moment your calf would start working.</p>
+      <div class="num">39 mm heel · 32 mm forefoot · 7 mm drop</div>
+    </div>
+    <div class="cap" data-range="0.32 0.49">
+      <div class="step">Upper</div>
+      <h2>One layer. No stretch.</h2>
+      <p>Monofilament woven into 1&nbsp;mm hexagonal cells. It doesn't give under load and it doesn't hold water, so the fit at 40K is the fit you laced at the start line.</p>
+      <div class="num">38 g/m² · 1 mm cell · translucent</div>
+    </div>
+    <div class="cap" data-range="0.50 0.67">
+      <div class="step">Halo Rail</div>
+      <h2>A rim, not a plate.</h2>
+      <p>One continuous carbon rim runs the whole perimeter: heel, both sides, toe. The centre stays open, so the foam under your foot compresses freely and springs back in full. A single keystone bridge keeps the rim square under the arch.</p>
+      <div class="num">Twill carbon · 1.8 mm · 7.2 mm flange</div>
+    </div>
+    <div class="cap" data-range="0.68 0.85">
+      <div class="step">The stack</div>
+      <h2>Five layers. Nothing else.</h2>
+      <p>Soft foam on top, the rail, firm foam underneath, rubber only where you land and toe off. No heel counter, no insole board, no glue you'll ever carry up a hill.</p>
+      <div class="num">AERFOAM X · HALO RAIL · GRIPLINE</div>
+    </div>
+    <div class="cap" data-range="0.87 1.08">
+      <div class="step">Assembled</div>
+      <h2>Race day only.</h2>
+      <p>Built for one job: holding marathon pace when your legs have stopped agreeing to it.</p>
+      <div class="num"><a href="#specs">Full specification ↓</a></div>
+    </div>
+
+    <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="loader" id="loader"><span id="loadtxt">Loading model</span><span class="track"><i id="loadbar"></i></span></div>
+  </div>
+</section>
+
+<main class="after">
+  <section class="band" id="specs">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Specification</div>
+          <h2>Every gram accounted for.</h2>
+        </div>
+        <p>Weighed on a US men's 9. Stack measured at the centre of the heel and under the first metatarsal head, with the sockliner in.</p>
+      </div>
+      <div class="specs">
+        <table class="spec">
+          <tbody>
+            <tr><th scope="row">Weight</th><td><span class="big">142 g</span><br>US M9, one shoe</td></tr>
+            <tr><th scope="row">Stack</th><td><span class="big">39 / 32 mm</span><br>Heel / forefoot</td></tr>
+            <tr><th scope="row">Drop</th><td>7 mm</td></tr>
+            <tr><th scope="row">Toe lift</th><td>34 mm at the tip · rocker apex at 59% of length</td></tr>
+            <tr><th scope="row">Plate</th><td>HALO RAIL: carbon twill perimeter rim, 1.8 mm, 7.2 mm upturned flange, open centre, midfoot keystone bridge</td></tr>
+            <tr><th scope="row">Midsole</th><td>AERFOAM X in two layers: softer above the rail, firmer below</td></tr>
+            <tr><th scope="row">Outsole</th><td>GRIPLINE rubber, 1.9 mm: chevron-siped forefoot pad and a lateral heel crescent</td></tr>
+            <tr><th scope="row">Upper</th><td>Hex monofilament, 38 g/m², unlined, flat laces, heel pull loop</td></tr>
+            <tr><th scope="row">Fit</th><td>Race fit. True to size; go up half a size if you're between.</td></tr>
+            <tr><th scope="row">Price</th><td><span class="big">$325</span></td></tr>
+          </tbody>
+        </table>
+        <figure class="spec-fig">
+          <svg viewBox="0 96 540 124" role="img" aria-label="Side profile diagram: 39 millimetre heel stack, 32 millimetre forefoot stack, toe lifted 34 millimetres, carbon rail running between the two foam layers.">
+            <path id="profileEdge" class="edge" d=""/>
+            <path id="profileRail" class="rail" d=""/>
+            <line class="dim" x1="0" y1="206" x2="520" y2="206"/>
+            <g id="profileDims"></g>
+          </svg>
+          <figcaption>Lateral profile, drawn from the same numbers as the 3D model. Rail in black.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band record" id="record">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">The record run</div>
+          <h2>Faster after thirty.</h2>
+        </div>
+        <p>Halden Lakeshore Marathon, 12 April 2026. 6&nbsp;°C, still air, a flat causeway loop run twice.</p>
+      </div>
+      <div class="record-grid">
+        <div>
+          <div class="time">2:19:48<small>Course record · Maren Solvik</small></div>
+          <blockquote>“I stopped thinking about my calves at 30K. That has never happened to me in a marathon.”<cite>Maren Solvik, after the finish</cite></blockquote>
+          <p class="story">Solvik ran the second half sixteen seconds faster than the first, and her quickest 5K came between 35 and 40 kilometres. She raced in a pre-production pair with 180 km on them.</p>
+        </div>
+        <div>
+          <table class="splits">
+            <thead><tr><th scope="col">Segment</th><th scope="col">Split</th><th scope="col">Elapsed</th></tr></thead>
+            <tbody id="splitRows"></tbody>
+          </table>
+          <div class="halves"><span>First half <b>1:10:02</b></span><span>Second half <b>1:09:46</b></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="materials">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Materials</div>
+          <h2>Four materials. Each one earns its place.</h2>
+        </div>
+        <p>Studio renders of the production model, the same geometry you turned above.</p>
+      </div>
+      <div class="mats">
+        <article class="mat">
+          <figure><div class="ph"><img src="img/mat_upper.jpg" alt="Macro of the translucent hexagonal mesh upper with lime lacing" loading="lazy" width="1200" height="750"></div></figure>
+          <h3>Hex monofilament <span class="mono">UPPER · 38 G/M²</span></h3>
+          <p>Single-layer monofilament woven into 1&nbsp;mm hexagonal cells. Translucent, non-stretch, unlined. It creases instead of stretching, which is exactly what keeps your foot on the platform in the corners.</p>
+        </article>
+        <article class="mat">
+          <figure><div class="ph"><img src="img/mat_foam.jpg" alt="Close-up of the AERFOAM X midsole sidewall with the carbon rail band" loading="lazy" width="1200" height="750"></div></figure>
+          <h3>AERFOAM X <span class="mono">MIDSOLE · TWO LAYERS</span></h3>
+          <p>Supercritically foamed and split in two so each layer can do one job: the top layer is soft for landing, the bottom layer is firmer so the rail has something to push against.</p>
+        </article>
+        <article class="mat">
+          <figure><div class="ph"><img src="img/mat_rail.jpg" alt="The carbon twill rail flange running along the forefoot sidewall" loading="lazy" width="1200" height="750"></div></figure>
+          <h3>Halo Rail <span class="mono">CARBON TWILL · 7.2 MM FLANGE</span></h3>
+          <p>A 2×2 twill rim with an upturned flange that shows on the sidewall. Stiff exactly where the foot rolls off and absent where it lands: the centre of the rail is open.</p>
+        </article>
+        <article class="mat">
+          <figure><div class="ph"><img src="img/mat_rubber.jpg" alt="Outsole view: chevron-siped forefoot rubber pad and lateral heel crescent on bare foam" loading="lazy" width="1200" height="750"></div></figure>
+          <h3>GRIPLINE <span class="mono">RUBBER · 1.9 MM</span></h3>
+          <p>Two pads and nothing more: a chevron-siped forefoot for toe-off and a crescent on the lateral heel for the first touch. Everything else is bare foam you don't have to carry for 42 kilometres.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="studio" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow" style="margin-bottom:16px">Studio · Cycles renders</div>
+      <div class="studio">
+        <figure><img src="img/studio_profile.jpg" alt="Lateral profile render" loading="lazy" width="1200" height="750"><figcaption>Lateral</figcaption></figure>
+        <figure><img src="img/studio_medial.jpg" alt="Medial profile render" loading="lazy" width="1200" height="750"><figcaption>Medial</figcaption></figure>
+        <figure><img src="img/studio_rear.jpg" alt="Medial three-quarter render" loading="lazy" width="1200" height="750"><figcaption>Medial ¾</figcaption></figure>
+        <figure><img src="img/studio_top.jpg" alt="Top-down render showing the lacing and sockliner" loading="lazy" width="1200" height="750"><figcaption>Top</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band draw" id="draw">
+    <div class="wrap draw-grid">
+      <div>
+        <div class="eyebrow">Release</div>
+        <h2>The draw opens 3&nbsp;October.</h2>
+        <p>One pair per runner. Pick your size now and you're entered the moment the draw opens. Winners hear back within 48 hours and pay only then.</p>
+      </div>
+      <form class="entry" id="entry" novalidate>
+        <div class="price"><strong>$325</strong><span>HALO 1 · Frost / Graphite / Signal Lime</span></div>
+        <fieldset>
+          <legend>US men's size</legend>
+          <div class="sizes" id="sizes"></div>
+        </fieldset>
+        <button class="btn" type="submit" id="enterBtn" style="justify-self:start">Enter the draw</button>
+        <p class="fine" id="entryNote">Pick a size to enter.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>NORDLIGHT is a fictional brand. HALO 1 is an original concept shoe, modelled procedurally in Blender and rendered live with three.js.</span>
+    <button type="button" id="fpsToggle" aria-pressed="false">Show frame rate</button>
+  </div>
+</footer>
+<div id="fps" hidden></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+
+<script>
+/* content that does not need WebGL: splits, sizes, spec diagram */
+(function () {
+  const splits = [["0–5 km","16:41"],["5–10","16:36"],["10–15","16:33"],["15–20","16:35"],["20–25","16:31"],["25–30","16:36"],["30–35","16:29"],["35–40","16:22"],["40–42.2","7:25"]];
+  const toS = t => { const [m, s] = t.split(":").map(Number); return m * 60 + s; };
+  const fmt = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60; return (h ? h + ":" + String(m).padStart(2, "0") : m) + ":" + String(ss).padStart(2, "0"); };
+  let el = 0, rows = "", best = Math.min(...splits.slice(0, 8).map(r => toS(r[1])));
+  for (const [seg, t] of splits) { el += toS(t); rows += `<tr class="${toS(t) === best ? "fast" : ""}"><td>${seg}</td><td>${t}</td><td>${fmt(el)}</td></tr>`; }
+  document.getElementById("splitRows").innerHTML = rows;
+
+  const sizes = document.getElementById("sizes");
+  const list = ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"];
+  sizes.innerHTML = list.map((s, i) => `<input type="radio" name="size" id="size-${i}" value="${s}"><label for="size-${i}">${s}</label>`).join("");
+  const form = document.getElementById("entry"), note = document.getElementById("entryNote");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const v = form.querySelector("input[name=size]:checked");
+    if (!v) { note.textContent = "Choose a size first, then enter."; note.className = "fine"; return; }
+    note.className = "confirm";
+    note.textContent = `You're in the draw for US M${v.value}. This is a concept page, so no entry or order was actually placed.`;
+  });
+
+  // spec profile drawn from the same functions as the Blender model
+  const L = 0.285;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const zb = x => 0.0075 * Math.pow(clamp(1 - x / 0.040, 0, 1), 2.1) + 0.034 * Math.pow(clamp((x - 0.168) / (L - 0.168), 0, 1), 2.05);
+  const SX = [0, .03, .07, .12, .165, .205, .24, .265, .2855], SV = [.037, .039, .0385, .036, .0335, .0318, .028, .0225, .015];
+  const stack = x => { for (let i = 0; i < SX.length - 1; i++) if (x <= SX[i + 1]) { const t = (x - SX[i]) / (SX[i + 1] - SX[i]); return SV[i] + t * (SV[i + 1] - SV[i]); } return SV[SV.length - 1]; };
+  const S = 1650, ox = 25, oy = 206;
+  const P = (x, z) => [(ox + x * S).toFixed(1), (oy - z * S).toFixed(1)];
+  let top = [], bot = [], rail = [];
+  for (let i = 0; i <= 60; i++) { const x = i / 60 * L; top.push(P(x, zb(x) + stack(x))); bot.push(P(x, zb(x))); rail.push(P(x, zb(x) + 0.37 * stack(x))); }
+  document.getElementById("profileEdge").setAttribute("d", "M" + bot.map(p => p.join(",")).join(" L") + " L" + top.reverse().map(p => p.join(",")).join(" L") + " Z");
+  document.getElementById("profileRail").setAttribute("d", "M" + rail.map(p => p.join(",")).join(" L"));
+  const d = document.getElementById("profileDims");
+  const heelX = 0.035, foreX = 0.205;
+  const dim = (x, z0, z1, label, val, side) => {
+    const [xa, ya] = P(x, z0), [, yb] = P(x, z1);
+    const tx = side > 0 ? +xa + 8 : +xa - 8, anchor = side > 0 ? "start" : "end";
+    return `<line class="dim" x1="${xa}" y1="${ya}" x2="${xa}" y2="${yb}"/><line class="dim" x1="${xa - 4}" y1="${yb}" x2="${+xa + 4}" y2="${yb}"/>` +
+      `<text class="lbl" x="${tx}" y="${(+yb) - 22}" text-anchor="${anchor}">${label}</text><text class="val" x="${tx}" y="${(+yb) - 6}" text-anchor="${anchor}">${val}</text>`;
+  };
+  d.innerHTML = dim(heelX, zb(heelX), zb(heelX) + stack(heelX), "HEEL", "39 mm", 1) +
+    dim(foreX, zb(foreX), zb(foreX) + stack(foreX), "FOREFOOT", "32 mm", -1) +
+    dim(0.283, 0, zb(0.283), "TOE LIFT", "34 mm", 1);
+})();
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const canvas = document.getElementById("gl");
+const stage = document.getElementById("stage");
+const sticky = stage.querySelector(".sticky");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------------- renderer ---------------- */
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+} catch (e) {
+  showFallback();
+  throw e;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.AgXToneMapping;
+renderer.toneMappingExposure = 1.15;
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+scene.environmentIntensity = 0.9;
+const key = new THREE.DirectionalLight(0xfff6ec, 1.6);
+key.position.set(-0.6, 1.0, 0.8);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xe8f0ff, 0.8);
+rim.position.set(0.5, 0.4, -0.9);
+scene.add(rim);
+
+const camera = new THREE.PerspectiveCamera(26, 1, 0.02, 20);
+const pitchG = new THREE.Group();   // tilt toward the camera
+const yawG = new THREE.Group();     // spin about the vertical axis
+scene.add(pitchG);
+pitchG.add(yawG);
+
+// soft contact shadow (static texture, no shadow maps)
+const shadowTex = (() => {
+  const c = document.createElement("canvas"); c.width = 256; c.height = 128;
+  const g = c.getContext("2d");
+  const grd = g.createRadialGradient(128, 64, 4, 128, 64, 124);
+  grd.addColorStop(0, "rgba(10,16,20,0.30)"); grd.addColorStop(0.5, "rgba(10,16,20,0.09)"); grd.addColorStop(1, "rgba(10,16,20,0)");
+  g.fillStyle = grd; g.save(); g.scale(1, 0.5); g.fillRect(0, 0, 256, 256); g.restore();
+  g.fillStyle = grd; g.fillRect(0, 0, 256, 128);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const shadow = new THREE.Mesh(new THREE.PlaneGeometry(0.31, 0.12), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, toneMapped: false }));
+shadow.rotation.x = -Math.PI / 2;
+shadow.position.y = -0.049;
+shadow.renderOrder = -1;
+yawG.add(shadow);
+
+/* ---------------- model loading ---------------- */
+const loadbar = document.getElementById("loadbar"), loadtxt = document.getElementById("loadtxt"), loaderEl = document.getElementById("loader");
+function forceImageTextures(parser) {
+  // decode embedded images through <img> rather than fetch(blob:) — works under strict CSPs
+  parser.textureLoader = new THREE.TextureLoader(parser.options.manager);
+  return { name: "force_img_textures" };
+}
+// "glb": load shoe.glb directly (any static host). "b64": the same GLB bytes as base64 text,
+// for hosts that don't serve .glb files.
+const MODEL_MODE = "b64";
+async function fetchB64(url) {
+  const res = await fetch(url + ".b64.txt");
+  if (!res.ok) throw new Error("HTTP " + res.status + " for " + url);
+  const total = +res.headers.get("content-length") || 0, reader = res.body.getReader(), parts = [];
+  let got = 0;
+  for (;;) { const { done, value } = await reader.read(); if (done) break; parts.push(value); got += value.length; if (total) loadbar.style.width = (100 * got / total).toFixed(0) + "%"; }
+  const bin = atob((await new Blob(parts).text()).trim());
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+function loadWith(url, draco) {
+  return new Promise(async (resolve, reject) => {
+    const l = new GLTFLoader();
+    if (draco) l.setDRACOLoader(draco);
+    l.register(forceImageTextures);
+    if (MODEL_MODE === "b64") {
+      try { l.parse(await fetchB64(url), "", resolve, reject); } catch (e) { reject(e); }
+      return;
+    }
+    l.load(url, resolve, ev => {
+      if (ev.total) loadbar.style.width = (100 * ev.loaded / ev.total).toFixed(0) + "%";
+    }, reject);
+  });
+}
+async function loadModel() {
+  const tries = [
+    () => { const d = new DRACOLoader(); d.setDecoderPath("draco/"); d.setDecoderConfig({ type: "wasm" }); return loadWith("shoe.glb", d); },
+    () => { const d = new DRACOLoader(); d.setDecoderPath("draco/"); d.setDecoderConfig({ type: "js" }); return loadWith("shoe.glb", d); },
+    () => { loadtxt.textContent = "Loading model (uncompressed)"; return loadWith("shoe_raw.glb", null); },
+  ];
+  let lastErr;
+  for (const t of tries) {
+    try { return await t(); } catch (e) { lastErr = e; console.warn("model load attempt failed", e); }
+  }
+  throw lastErr;
+}
+
+const G = {};                 // part groups
+const prints = {};            // side prints, hidden when their side faces away
+const fadeMats = {};          // group -> [{mat, base}]
+let model = null;
+
+const ANCHORS = {
+  upper:    ["G_Upper",     [0.0225, 0.0615, 0.0357], "Upper", "Hex monofilament"],
+  sock:     ["G_Sockliner", [-0.0425, 0.040, 0.0028], "Sockliner", "2.5 mm, removable"],
+  foamtop:  ["G_FoamTop",   [-0.0675, 0.0312, 0.0489], "Top foam", "AERFOAM X · soft"],
+  flange:   ["G_Rail",      [-0.0275, 0.0174, 0.0418], "Halo Rail", "7.2 mm carbon flange"],
+  bridge:   ["G_Rail",      [-0.0055, 0.0148, 0.0051], "Keystone bridge", "holds the arch"],
+  open:     ["G_Rail",      [0.0625, 0.016, -0.0008], "Open centre", "bare foam underfoot"],
+  foambase: ["G_FoamBase",  [-0.0825, 0.007, 0.048], "Base foam", "AERFOAM X · firm"],
+  rubber:   ["G_Rubber",    [0.0925, 0.0089, 0.0377], "GRIPLINE", "forefoot pad, 1.9 mm"],
+  toe:      ["G_FoamBase",  [0.1415, 0.0334, 0.0], "Toe lift", "34 mm"],
+  heel:     ["G_FoamBase",  [-0.1075, 0.0389, 0.046], "Heel stack", "39 mm"],
+};
+const annSvg = document.getElementById("ann"), tagsEl = document.getElementById("tags");
+const annEls = {};
+const SVGNS = "http://www.w3.org/2000/svg";
+for (const [k, [, , title, sub]] of Object.entries(ANCHORS)) {
+  const line = document.createElementNS(SVGNS, "line"), dot = document.createElementNS(SVGNS, "circle");
+  dot.setAttribute("r", "4");
+  const g = document.createElementNS(SVGNS, "g"); g.append(line, dot); g.style.opacity = 0; annSvg.append(g);
+  const tag = document.createElement("div"); tag.className = "tag"; tag.innerHTML = `<b>${title}</b>${sub}`; tagsEl.append(tag);
+  annEls[k] = { g, line, dot, tag, w: 0, h: 0, anchor: new THREE.Vector3(ANCHORS[k][1][0] + 0.1425, ANCHORS[k][1][1], ANCHORS[k][1][2]) };
+}
+
+function prepModel(gltf) {
+  model = gltf.scene;
+  model.position.set(-0.1425, -0.047, 0);
+  yawG.add(model);
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+  model.traverse(o => {
+    if (o.name && o.name.startsWith("G_")) G[o.name] = o;
+    if (!o.isMesh) return;
+    o.frustumCulled = true;
+    const m = o.material;
+    const thin = ["Upper", "PrintLateral", "PrintMedial", "Eyestay"].includes(o.name);
+    m.side = thin ? THREE.DoubleSide : THREE.FrontSide;
+    for (const t of [m.map, m.normalMap, m.roughnessMap]) if (t) t.anisotropy = Math.min(8, maxAniso);
+    if (o.name === "Upper") {
+      o.renderOrder = 2; m.depthWrite = false; m.opacity = 0.97;
+      m.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace("#include <map_fragment>", "#include <map_fragment>\n diffuseColor.a = 0.74 + 0.26 * diffuseColor.a;"); };
+    }
+    if (o.name === "PrintLateral" || o.name === "PrintMedial") prints[o.name] = o;
+    if (o.name.startsWith("Print")) { o.renderOrder = 3; m.depthWrite = false; m.polygonOffset = true; m.polygonOffsetFactor = -2; m.polygonOffsetUnits = -2; }
+    if (o.name === "Tongue") { o.renderOrder = 1; }
+    if (o.name === "Eyestay") { o.renderOrder = 4; }
+    if (o.name === "FoamPrint") { o.renderOrder = 3; m.depthWrite = false; m.polygonOffset = true; m.polygonOffsetFactor = -2; m.polygonOffsetUnits = -2; }
+    if (m.isMeshStandardMaterial) m.envMapIntensity = 1.0;
+    // remember which group this material fades with
+    let p = o.parent; while (p && !(p.name || "").startsWith("G_")) p = p.parent;
+    const gname = p ? p.name : "";
+    (fadeMats[gname] ||= []).push({ mat: m, base: m.opacity, transparentBase: m.transparent, depthWriteBase: m.depthWrite });
+  });
+  for (const g of Object.values(G)) g.userData.y0 = g.position.y;
+}
+
+/* ---------------- choreography ---------------- */
+const D = THREE.MathUtils.degToRad;
+const KEYS = [
+  { p: 0.00, yaw: -36, pitch: 13, shift: 1, zoom: 1.0, off: {}, op: {} },
+  { p: 0.07, yaw: -36, pitch: 13, shift: 1, zoom: 1.0, off: {}, op: {} },
+  { p: 0.19, yaw: 0, pitch: 1, shift: 0, zoom: 1.02, off: {}, op: {} },
+  { p: 0.29, yaw: 0, pitch: 1, shift: 0, zoom: 1.02, off: {}, op: {} },
+  { p: 0.41, yaw: -24, pitch: 16, shift: 0, zoom: 0.92, off: { G_Upper: 0.075 }, op: { G_Upper: 0.14 } },
+  { p: 0.48, yaw: -24, pitch: 16, shift: 0, zoom: 0.92, off: { G_Upper: 0.075 }, op: { G_Upper: 0.14 } },
+  { p: 0.59, yaw: -32, pitch: 52, shift: 0, zoom: 1.0, off: { G_Upper: 0.12, G_Sockliner: 0.08, G_FoamTop: 0.05 }, op: { G_Upper: 0.0, G_Sockliner: 0.0, G_FoamTop: 0.12 } },
+  { p: 0.66, yaw: -32, pitch: 52, shift: 0, zoom: 1.0, off: { G_Upper: 0.12, G_Sockliner: 0.08, G_FoamTop: 0.05 }, op: { G_Upper: 0.0, G_Sockliner: 0.0, G_FoamTop: 0.12 } },
+  { p: 0.77, yaw: -26, pitch: 18, shift: 0, zoom: 0.74, off: { G_Upper: 0.118, G_Sockliner: 0.084, G_FoamTop: 0.052, G_Rail: 0.026, G_Rubber: -0.02 }, op: { G_Upper: 0.3 } },
+  { p: 0.84, yaw: -26, pitch: 18, shift: 0, zoom: 0.74, off: { G_Upper: 0.118, G_Sockliner: 0.084, G_FoamTop: 0.052, G_Rail: 0.026, G_Rubber: -0.02 }, op: { G_Upper: 0.3 } },
+  { p: 0.95, yaw: -36, pitch: 13, shift: 0, zoom: 1.0, off: {}, op: {} },
+  { p: 1.00, yaw: -36, pitch: 13, shift: 0, zoom: 1.0, off: {}, op: {} },
+];
+const ANN_RANGES = {
+  toe: [0.15, 0.31], heel: [0.15, 0.31],
+  upper: [0.36, 0.49],
+  flange: [0.53, 0.67], bridge: [0.54, 0.67], open: [0.55, 0.67],
+  foamtop: [0.72, 0.85], foambase: [0.72, 0.85], rubber: [0.73, 0.85], sock: [0.74, 0.85],
+};
+const GROUPS = ["G_Upper", "G_Sockliner", "G_FoamTop", "G_Rail", "G_FoamBase", "G_Rubber"];
+const ease = t => t * t * (3 - 2 * t);
+function sample(p) {
+  let i = 0; while (i < KEYS.length - 2 && p > KEYS[i + 1].p) i++;
+  const a = KEYS[i], b = KEYS[i + 1];
+  const t = ease(THREE.MathUtils.clamp((p - a.p) / Math.max(1e-6, b.p - a.p), 0, 1));
+  const L = (x, y) => x + (y - x) * t;
+  const s = { yaw: L(a.yaw, b.yaw), pitch: L(a.pitch, b.pitch), shift: L(a.shift, b.shift), zoom: L(a.zoom, b.zoom), off: {}, op: {} };
+  for (const g of GROUPS) { s.off[g] = L(a.off[g] || 0, b.off[g] || 0); s.op[g] = L(a.op[g] ?? 1, b.op[g] ?? 1); }
+  return s;
+}
+function band(p, r0, r1, f = 0.025) {
+  return THREE.MathUtils.clamp(Math.min((p - r0) / f, (r1 - p) / f), 0, 1);
+}
+
+/* ---------------- interaction: drag to orbit ---------------- */
+let userYaw = 0, userPitch = 0, velYaw = 0, velPitch = 0, dragging = false, lastX = 0, lastY = 0, lastT = 0;
+canvas.addEventListener("pointerdown", e => {
+  dragging = true; lastX = e.clientX; lastY = e.clientY; lastT = performance.now();
+  velYaw = velPitch = 0; canvas.classList.add("dragging");
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove", e => {
+  if (!dragging) return;
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  const now = performance.now(), dt = Math.max(1, now - lastT);
+  lastX = e.clientX; lastY = e.clientY; lastT = now;
+  const k = 0.45;
+  userYaw += dx * k; userPitch = THREE.MathUtils.clamp(userPitch + dy * k * 0.6, -35, 55);
+  velYaw = dx * k / dt * 16; velPitch = dy * k * 0.6 / dt * 16;
+  wake();
+});
+const endDrag = () => { dragging = false; canvas.classList.remove("dragging"); wake(); };
+canvas.addEventListener("pointerup", endDrag);
+canvas.addEventListener("pointercancel", endDrag);
+canvas.addEventListener("keydown", e => {
+  const step = 8;
+  if (e.key === "ArrowLeft") userYaw -= step; else if (e.key === "ArrowRight") userYaw += step;
+  else if (e.key === "ArrowUp") userPitch = Math.max(-35, userPitch - step); else if (e.key === "ArrowDown") userPitch = Math.min(55, userPitch + step);
+  else return;
+  e.preventDefault(); wake();
+});
+
+/* ---------------- scroll ---------------- */
+let target = 0, prog = 0, lastScrollP = 0;
+function readScroll() {
+  const r = stage.getBoundingClientRect();
+  const span = stage.offsetHeight - innerHeight;
+  target = THREE.MathUtils.clamp(-r.top / span, 0, 1);
+}
+addEventListener("scroll", () => { readScroll(); wake(); }, { passive: true });
+for (const el of document.querySelectorAll("#seeInside, .to-inside")) el.addEventListener("click", e => {
+  e.preventDefault();
+  const top = stage.offsetTop + (stage.offsetHeight - innerHeight) * 0.2;
+  scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+});
+
+/* ---------------- sizing ---------------- */
+let W = 1, H = 1, isNarrow = false;
+function resize() {
+  W = sticky.clientWidth; H = sticky.clientHeight;
+  isNarrow = W < 900;
+  renderer.setSize(W, H, false);
+  camera.aspect = W / H;
+  camera.updateProjectionMatrix();
+  annSvg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  for (const a of Object.values(annEls)) { a.w = a.tag.offsetWidth; a.h = a.tag.offsetHeight; }
+  const cr = document.querySelector(".cap").getBoundingClientRect();
+  capRight = cr.right - sticky.getBoundingClientRect().left;
+  readScroll();
+  wake();
+}
+new ResizeObserver(resize).observe(sticky);
+
+/* ---------------- frame ---------------- */
+const caps = [...document.querySelectorAll(".cap")].map(el => ({ el, r: el.dataset.range.split(" ").map(Number) }));
+const bars = [...document.querySelectorAll(".progress i")];
+const heroEl = document.getElementById("hero");
+const tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3();
+let capRight = 0;
+let dirty = true, running = false;
+function wake() { dirty = true; if (!running) { running = true; requestAnimationFrame(frame); } }
+
+// perf stats
+const perf = { frames: 0, last: performance.now(), fps: 0, worst: 0, cpu: 0, samples: [] };
+window.__perf = perf;
+const fpsEl = document.getElementById("fps");
+document.getElementById("fpsToggle").addEventListener("click", e => {
+  fpsEl.hidden = !fpsEl.hidden; e.currentTarget.setAttribute("aria-pressed", String(!fpsEl.hidden));
+  e.currentTarget.textContent = fpsEl.hidden ? "Show frame rate" : "Hide frame rate";
+});
+
+let prevT = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - prevT) / 1000); prevT = now;
+  const t0 = performance.now();
+  let moving = false;
+
+  // smooth scroll progress
+  const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 9);
+  prog += (target - prog) * k;
+  if (Math.abs(target - prog) < 1e-4) prog = target; else moving = true;
+
+  // drag inertia, then settle back toward the scripted view while scrolling
+  if (!dragging) {
+    if (Math.abs(velYaw) > 0.01 || Math.abs(velPitch) > 0.01) {
+      userYaw += velYaw; userPitch = THREE.MathUtils.clamp(userPitch + velPitch, -35, 55);
+      velYaw *= Math.pow(0.9, dt * 60); velPitch *= Math.pow(0.9, dt * 60); moving = true;
+    }
+    const sp = Math.abs(prog - lastScrollP);
+    if (sp > 1e-5 && (Math.abs(userYaw) > 0.05 || Math.abs(userPitch) > 0.05)) {
+      const decay = Math.exp(-sp * 40);
+      userYaw *= decay; userPitch *= decay; moving = true;
+    }
+  }
+  lastScrollP = prog;
+
+  if (dirty || moving) render(prog);
+  dirty = false;
+
+  // stats
+  const cpu = performance.now() - t0;
+  perf.frames++; perf.cpu = perf.cpu * 0.9 + cpu * 0.1;
+  const ft = dt * 1000; if (perf.samples.length > 600) perf.samples.shift(); perf.samples.push(ft);
+  if (now - perf.last > 500) {
+    perf.fps = perf.frames * 1000 / (now - perf.last); perf.frames = 0; perf.last = now;
+    if (!fpsEl.hidden) fpsEl.textContent = `${perf.fps.toFixed(0)} fps · ${perf.cpu.toFixed(1)} ms cpu · ${renderer.info.render.calls} calls · ${(renderer.info.render.triangles / 1000).toFixed(0)}k tris`;
+  }
+  if (moving || dragging || !fpsEl.hidden) requestAnimationFrame(frame); else running = false;
+}
+
+function render(p) {
+  const s = sample(p);
+  // hero framing: on wide screens the shoe sits right of the headline
+  const shift = s.shift;
+  yawG.rotation.y = D(s.yaw + userYaw);
+  pitchG.rotation.x = D(s.pitch + userPitch);
+  const aspect = W / H;
+  const tv = Math.tan(D(camera.fov) / 2), th = tv * aspect;
+  // half-width of the view at the model, sized so the shoe fills ~55% (desktop) / ~78% (phone) of the width
+  const halfW = (isNarrow ? 0.185 : 0.27) / s.zoom;
+  const halfH = (isNarrow ? 0.20 : 0.15) / s.zoom;
+  const dist = Math.max(halfW / th, halfH / tv);
+  // desktop: shoe sits right of the text column; phone: below the headline in the hero
+  const nx = isNarrow ? 0 : 0.20 + 0.04 * shift;
+  const ny = isNarrow ? (-0.10 * s.shift - 0.06) : 0.02;
+  camera.position.set(-nx * dist * th, -ny * dist * tv, dist);
+  camera.lookAt(camera.position.x, camera.position.y, 0);
+
+  if (model) {
+    for (const g of GROUPS) {
+      const node = G[g]; if (!node) continue;
+      node.position.y = node.userData.y0 + s.off[g];
+      const op = s.op[g];
+      node.visible = op > 0.005;
+      for (const f of fadeMats[g] || []) {
+        const fading = op < 0.995;
+        f.mat.opacity = f.base * op;
+        const tr = f.transparentBase || fading;
+        if (f.mat.transparent !== tr) { f.mat.transparent = tr; f.mat.needsUpdate = true; }
+        f.mat.depthWrite = fading ? false : f.depthWriteBase;
+      }
+    }
+    const cy = Math.cos(D(s.yaw + userYaw)), tilt = Math.abs(s.pitch + userPitch) > 40;
+    if (prints.PrintLateral) prints.PrintLateral.visible = tilt || cy > -0.2;
+    if (prints.PrintMedial) prints.PrintMedial.visible = tilt || cy < 0.2;
+    const spread = Math.abs(s.off.G_Rubber) / 0.02;
+    shadow.material.opacity = (1 - 0.6 * spread) * THREE.MathUtils.clamp(1 - (s.pitch + userPitch - 16) / 18, 0, 1);
+  }
+
+  renderer.render(scene, camera);
+
+  // annotations
+  const showAnn = model && !dragging;
+  const placed = [];
+  for (const [k, a] of Object.entries(annEls)) {
+    const r = ANN_RANGES[k];
+    let o = showAnn && r ? band(p, r[0], r[1]) : 0;
+    if (Math.abs(userYaw) > 20 || Math.abs(userPitch) > 20) o *= 0.0;
+    if (o <= 0.001) { if (a.on) { a.g.style.opacity = 0; a.tag.style.opacity = 0; a.on = false; } continue; }
+    const node = G[ANCHORS[k][0]];
+    tmp.copy(a.anchor); node.localToWorld(tmp); tmp.project(camera);
+    const x = (tmp.x * 0.5 + 0.5) * W, y = (-tmp.y * 0.5 + 0.5) * H;
+    // leader goes outward from the shoe centre
+    tmp2.set(0, 0, 0); yawG.localToWorld(tmp2); tmp2.project(camera);
+    const cx = (tmp2.x * 0.5 + 0.5) * W, cy = (-tmp2.y * 0.5 + 0.5) * H;
+    let dx = x - cx, dy = y - cy; const len = Math.hypot(dx, dy) || 1; dx /= len; dy /= len;
+    const lead = isNarrow ? 26 : 44;
+    let lx = x + dx * lead, ly = y + dy * lead - 8;
+    if (!a.w) { a.w = a.tag.offsetWidth; a.h = a.tag.offsetHeight; }
+    let tx = dx >= 0 ? lx + 4 : lx - a.w - 4, ty = ly - a.h / 2;
+    const minX = isNarrow ? 8 : capRight + 20;
+    if (tx < minX) { tx = minX; }
+    tx = THREE.MathUtils.clamp(tx, 8, W - a.w - 8); ty = THREE.MathUtils.clamp(ty, 64, H - a.h - 8);
+    placed.push({ a, o, x, y, lx, ly, tx, ty });
+  }
+  // nudge overlapping tags apart (top to bottom), then re-aim their leaders
+  placed.sort((m, n) => m.ty - n.ty);
+  for (let i = 0; i < placed.length; i++) for (let j = 0; j < i; j++) {
+    const m = placed[j], n = placed[i];
+    const overlapX = n.tx < m.tx + m.a.w + 6 && m.tx < n.tx + n.a.w + 6;
+    if (overlapX && n.ty < m.ty + m.a.h + 6) n.ty = m.ty + m.a.h + 6;
+  }
+  for (const q of placed) {
+    const a = q.a, ly = Math.min(Math.max(q.ly, q.ty + 6), q.ty + a.h - 6);
+    const lx = q.tx > q.x ? q.tx : q.tx + a.w;
+    a.line.setAttribute("x1", q.x.toFixed(1)); a.line.setAttribute("y1", q.y.toFixed(1));
+    a.line.setAttribute("x2", lx.toFixed(1)); a.line.setAttribute("y2", ly.toFixed(1));
+    a.dot.setAttribute("cx", q.x.toFixed(1)); a.dot.setAttribute("cy", q.y.toFixed(1));
+    a.g.style.opacity = q.o; a.tag.style.opacity = q.o;
+    a.tag.style.transform = `translate3d(${q.tx.toFixed(1)}px, ${q.ty.toFixed(1)}px, 0)`;
+    a.on = true;
+  }
+
+  // captions, hero and progress rail
+  heroEl.style.opacity = band(p, -1, 0.075, 0.04);
+  heroEl.style.pointerEvents = p < 0.06 ? "auto" : "none";
+  heroEl.style.visibility = p < 0.08 ? "visible" : "hidden";
+  for (const c of caps) {
+    const o = band(p, c.r[0], c.r[1], 0.03);
+    c.el.style.opacity = o;
+    c.el.style.pointerEvents = o > 0.5 ? "auto" : "none";
+    c.el.style.visibility = o > 0.001 ? "visible" : "hidden";
+  }
+  caps.forEach((c, i) => { bars[i].style.height = (100 * THREE.MathUtils.clamp((p - c.r[0]) / (c.r[1] - c.r[0]), 0, 1)).toFixed(0) + "%"; });
+}
+
+// deterministic hook for automated QA: jump straight to a progress value and render
+window.__setProgress = p => { target = prog = lastScrollP = p; render(p); return renderer.info.render; };
+window.__setView = (p, yaw, pitch) => { userYaw = yaw; userPitch = pitch; velYaw = velPitch = 0; target = prog = lastScrollP = p; render(p); };
+
+function showFallback() {
+  const f = document.createElement("div");
+  f.className = "fallback";
+  f.innerHTML = '<img src="img/studio_hero.jpg" alt="HALO 1 studio render">';
+  sticky.append(f);
+  loaderEl.hidden = true;
+}
+
+resize();
+render(0);
+try {
+  const gltf = await loadModel();
+  prepModel(gltf);
+  // warm both shader variants (opaque and fading) so the first fade doesn't stall on a compile
+  const all = Object.values(fadeMats).flat();
+  for (const f of all) { f.mat.transparent = true; f.mat.needsUpdate = true; }
+  renderer.compile(scene, camera);
+  for (const f of all) { f.mat.transparent = f.transparentBase; f.mat.needsUpdate = true; }
+  renderer.compile(scene, camera);
+  loaderEl.hidden = true;
+  readScroll(); prog = target;
+  wake();
+} catch (e) {
+  console.error("Could not load the 3D model", e);
+  loadtxt.textContent = "3D model unavailable";
+  showFallback();
+}
+</script>
+
+</body></html>
