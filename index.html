@@ -140,6 +140,15 @@
   .facts { display: flex; flex-wrap: wrap; gap: 8px; }
   .fact { font: 500 12px/1 var(--mono); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; color: var(--ink-2); background: color-mix(in srgb, var(--surface) 70%, transparent); }
   .cta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .colorways legend span { color: var(--ink); }
+  .swatches { display: flex; gap: 10px; }
+  .swatches input { position: absolute; opacity: 0; pointer-events: none; }
+  .swatches label {
+    width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 1px solid var(--line);
+    background: conic-gradient(from 45deg, var(--accent) 0 25%, var(--trim) 0 50%, var(--foam) 0);
+  }
+  .swatches input:checked + label { box-shadow: 0 0 0 2px var(--ground), 0 0 0 3px var(--ink); }
+  .swatches input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 4px; }
   .hint { font: 500 12px/1.4 var(--mono); color: var(--muted); display: flex; gap: 8px; align-items: center; }
   .hint i { display: inline-block; width: 22px; height: 1px; background: var(--muted); }
 
@@ -262,6 +271,7 @@
     .mats { grid-template-columns: minmax(0, 1fr); gap: 44px; }
     .studio { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .tag { font-size: 11px; padding: 5px 7px; }
+    .colorways { order: 1; margin-top: auto; margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px); }
   }
   @media (max-width: 420px) {
     .facts .fact:nth-child(3) { display: none; }
@@ -299,6 +309,15 @@
       <p class="lede">Carbon around the foot. Not under it.</p>
       <p class="body">A carbon rim wraps the foam instead of splitting it. Your forefoot sinks into bare AERFOAM&nbsp;X; the rail catches you at the edges and rolls you forward.</p>
       <div class="facts"><span class="fact">$325</span><span class="fact">142 g · US M9</span><span class="fact">39 / 32 mm</span></div>
+      <fieldset class="colorways" id="colorways">
+        <legend>Colorway · <span id="cwName">Frost / Graphite / Signal Lime</span></legend>
+        <div class="swatches">
+          <input type="radio" name="colorway" id="cw-frost" value="Frost / Graphite / Signal Lime" aria-label="Frost / Graphite / Signal Lime" autocomplete="off" data-upper="#ffffff" data-foam="#dce4e8" data-base="#cfd9de" data-trim="#2b2f35" data-accent="#c9f24b" checked><label for="cw-frost" title="Frost / Graphite / Signal Lime" style="--foam:#dce4e8;--trim:#2b2f35;--accent:#c9f24b"></label>
+          <input type="radio" name="colorway" id="cw-tide" value="Tide / Ink / Signal Coral" aria-label="Tide / Ink / Signal Coral" autocomplete="off" data-upper="#bfe3ea" data-foam="#e3eef0" data-base="#c4dde3" data-trim="#14233a" data-accent="#ff4a2e"><label for="cw-tide" title="Tide / Ink / Signal Coral" style="--foam:#e3eef0;--trim:#14233a;--accent:#ff4a2e"></label>
+          <input type="radio" name="colorway" id="cw-dune" value="Dune / Umber / Signal Orange" aria-label="Dune / Umber / Signal Orange" autocomplete="off" data-upper="#f3e6cf" data-foam="#efe4d0" data-base="#dcc9a8" data-trim="#3d2c20" data-accent="#ff7300"><label for="cw-dune" title="Dune / Umber / Signal Orange" style="--foam:#efe4d0;--trim:#3d2c20;--accent:#ff7300"></label>
+          <input type="radio" name="colorway" id="cw-midnight" value="Midnight / Carbon / Signal Pink" aria-label="Midnight / Carbon / Signal Pink" autocomplete="off" data-upper="#383f46" data-foam="#2a3036" data-base="#1d2226" data-trim="#0d0f11" data-accent="#ff2e93"><label for="cw-midnight" title="Midnight / Carbon / Signal Pink" style="--foam:#2a3036;--trim:#0d0f11;--accent:#ff2e93"></label>
+        </div>
+      </fieldset>
       <div class="cta-row">
         <a class="btn" href="#draw">Enter the draw</a>
         <a class="btn ghost" href="#inside" id="seeInside">See inside</a>
@@ -460,7 +479,7 @@
         <p>One pair per runner. Pick your size now and you're entered the moment the draw opens. Winners hear back within 48 hours and pay only then.</p>
       </div>
       <form class="entry" id="entry" novalidate>
-        <div class="price"><strong>$325</strong><span>HALO 1 · Frost / Graphite / Signal Lime</span></div>
+        <div class="price"><strong>$325</strong><span id="cwLabel">HALO 1 · Frost / Graphite / Signal Lime</span></div>
         <fieldset>
           <legend>US men's size</legend>
           <div class="sizes" id="sizes"></div>
@@ -500,6 +519,13 @@
   const sizes = document.getElementById("sizes");
   const list = ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"];
   sizes.innerHTML = list.map((s, i) => `<input type="radio" name="size" id="size-${i}" value="${s}"><label for="size-${i}">${s}</label>`).join("");
+  // colorway picker: labels here; the 3D model recolors itself from the same inputs
+  const cwName = document.getElementById("cwName"), cwLabel = document.getElementById("cwLabel");
+  document.getElementById("colorways").addEventListener("change", e => {
+    cwName.textContent = e.target.value;
+    cwLabel.textContent = "HALO 1 · " + e.target.value;
+  });
+
   const form = document.getElementById("entry"), note = document.getElementById("entryNote");
   form.addEventListener("submit", e => {
     e.preventDefault();
@@ -643,6 +669,7 @@ async function loadModel() {
 const G = {};                 // part groups
 const prints = {};            // side prints, hidden when their side faces away
 const fadeMats = {};          // group -> [{mat, base}]
+const mats = {};              // material name -> material, for colorways
 let model = null;
 
 const ANCHORS = {
@@ -678,6 +705,7 @@ function prepModel(gltf) {
     if (!o.isMesh) return;
     o.frustumCulled = true;
     const m = o.material;
+    mats[m.name] = m;
     const thin = ["Upper", "PrintLateral", "PrintMedial", "Eyestay"].includes(o.name);
     m.side = thin ? THREE.DoubleSide : THREE.FrontSide;
     for (const t of [m.map, m.normalMap, m.roughnessMap]) if (t) t.anisotropy = Math.min(8, maxAniso);
@@ -698,6 +726,16 @@ function prepModel(gltf) {
   });
   for (const g of Object.values(G)) g.userData.y0 = g.position.y;
 }
+
+/* ---------------- colorways ---------------- */
+// each swatch input carries its colors as data-* attributes; the upper color tints the hex mesh texture
+const CW_SLOTS = { upper: ["M_UpperMesh"], foam: ["M_Foam"], base: ["M_FoamBase"], trim: ["M_Graphite", "M_Eyestay"], accent: ["M_Lace", "M_Eyelet"] };
+function applyColorway(input) {
+  if (!input) return;
+  for (const [slot, names] of Object.entries(CW_SLOTS)) for (const n of names) mats[n]?.color.set(input.dataset[slot]);
+  wake();
+}
+document.getElementById("colorways").addEventListener("change", e => applyColorway(e.target));
 
 /* ---------------- choreography ---------------- */
 const D = THREE.MathUtils.degToRad;
@@ -965,6 +1003,7 @@ render(0);
 try {
   const gltf = await loadModel();
   prepModel(gltf);
+  applyColorway(document.querySelector("input[name=colorway]:checked"));
   // warm both shader variants (opaque and fading) so the first fade doesn't stall on a compile
   const all = Object.values(fadeMats).flat();
   for (const f of all) { f.mat.transparent = true; f.mat.needsUpdate = true; }
