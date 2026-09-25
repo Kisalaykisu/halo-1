@@ -1,4 +1,20 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- link previews: og:/twitter: images must be absolute URLs (GitHub Pages site) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NORDLIGHT">
+<meta property="og:title" content="NORDLIGHT HALO 1">
+<meta property="og:description" content="A concept marathon racer with a carbon rim around the foam instead of a plate under it. Live 3D model, four colorways, and AR on your own floor.">
+<meta property="og:url" content="https://kisalaykisu.github.io/halo-1/">
+<meta property="og:image" content="https://kisalaykisu.github.io/halo-1/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="HALO 1 racing shoe in Frost / Graphite / Signal Lime, studio render">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NORDLIGHT HALO 1">
+<meta name="twitter:description" content="A concept marathon racer with a carbon rim around the foam instead of a plate under it. Live 3D model, four colorways, and AR on your own floor.">
+<meta name="twitter:image" content="https://kisalaykisu.github.io/halo-1/img/og-image.jpg">
+<meta name="twitter:image:alt" content="HALO 1 racing shoe in Frost / Graphite / Signal Lime, studio render">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NORDLIGHT HALO 1</title>
@@ -149,6 +165,18 @@
   }
   .swatches input:checked + label { box-shadow: 0 0 0 2px var(--ground), 0 0 0 3px var(--ink); }
   .swatches input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 4px; }
+  /* the AR button sits beside the swatches, out of flow, so the hero layout doesn't move */
+  .cw-row { position: relative; }
+  .btn.ar-btn { position: absolute; left: 170px; bottom: -4px; }
+  .btn.ar-btn svg { width: 18px; height: 18px; flex: none; }
+  .btn.ar-btn[aria-busy="true"] { cursor: progress; opacity: .7; }
+  .ar-dialog { width: min(340px, calc(100vw - 32px)); box-sizing: border-box; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--ground); color: var(--ink); }
+  .ar-dialog::backdrop { background: rgb(10 16 20 / .45); }
+  .ar-dialog h2 { margin: 8px 0 12px; font: 800 30px/1 var(--display); font-stretch: 80%; font-variation-settings: "wdth" 80; }
+  .ar-dialog p { margin: 0 0 16px; color: var(--ink-2); }
+  .ar-dialog .qr { display: grid; place-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 14px; margin-bottom: 16px; aspect-ratio: 1; }
+  .ar-dialog .qr svg { width: 100%; height: auto; display: block; }
+  .ar-dialog .fine { overflow-wrap: anywhere; margin-bottom: 16px; }
   .hint { font: 500 12px/1.4 var(--mono); color: var(--muted); display: flex; gap: 8px; align-items: center; }
   .hint i { display: inline-block; width: 22px; height: 1px; background: var(--muted); }
 
@@ -271,7 +299,10 @@
     .mats { grid-template-columns: minmax(0, 1fr); gap: 44px; }
     .studio { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .tag { font-size: 11px; padding: 5px 7px; }
-    .colorways { order: 1; margin-top: auto; margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px); }
+    .cw-row { order: 1; margin-top: auto; margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px); }
+  }
+  @media (max-width: 369px) {
+    .btn.ar-btn { position: static; margin-top: 12px; }
   }
   @media (max-width: 420px) {
     .facts .fact:nth-child(3) { display: none; }
@@ -309,6 +340,7 @@
       <p class="lede">Carbon around the foot. Not under it.</p>
       <p class="body">A carbon rim wraps the foam instead of splitting it. Your forefoot sinks into bare AERFOAM&nbsp;X; the rail catches you at the edges and rolls you forward.</p>
       <div class="facts"><span class="fact">$325</span><span class="fact">142 g · US M9</span><span class="fact">39 / 32 mm</span></div>
+      <div class="cw-row">
       <fieldset class="colorways" id="colorways">
         <legend>Colorway · <span id="cwName">Frost / Graphite / Signal Lime</span></legend>
         <div class="swatches">
@@ -318,6 +350,11 @@
           <input type="radio" name="colorway" id="cw-midnight" value="Midnight / Carbon / Signal Pink" aria-label="Midnight / Carbon / Signal Pink" autocomplete="off" data-upper="#383f46" data-foam="#2a3036" data-base="#1d2226" data-trim="#0d0f11" data-accent="#ff2e93"><label for="cw-midnight" title="Midnight / Carbon / Signal Pink" style="--foam:#2a3036;--trim:#0d0f11;--accent:#ff2e93"></label>
         </div>
       </fieldset>
+      <button class="btn ghost small ar-btn" type="button" id="arBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>
+        <span>View on your floor</span>
+      </button>
+      </div>
       <div class="cta-row">
         <a class="btn" href="#draw">Enter the draw</a>
         <a class="btn ghost" href="#inside" id="seeInside">See inside</a>
@@ -360,6 +397,15 @@
     <div class="loader" id="loader"><span id="loadtxt">Loading model</span><span class="track"><i id="loadbar"></i></span></div>
   </div>
 </section>
+
+<dialog class="ar-dialog" id="arDialog" aria-labelledby="arTitle">
+  <div class="eyebrow">View on your floor</div>
+  <h2 id="arTitle">Open it on your phone</h2>
+  <div class="qr" id="arQr" hidden></div>
+  <p id="arMsg"></p>
+  <p class="fine" id="arUrl" hidden></p>
+  <form method="dialog"><button class="btn ghost small">Close</button></form>
+</dialog>
 
 <main class="after">
   <section class="band" id="specs">
@@ -525,6 +571,92 @@
     cwName.textContent = e.target.value;
     cwLabel.textContent = "HALO 1 · " + e.target.value;
   });
+  // ?cw=dune preselects a colorway (the desktop QR code carries the current one to the phone)
+  const cwParam = document.getElementById("cw-" + new URLSearchParams(location.search).get("cw"));
+  if (cwParam && cwParam.name === "colorway") { cwParam.checked = true; cwParam.dispatchEvent(new Event("change", { bubbles: true })); }
+
+  // "View on your floor": iPhone/iPad -> AR Quick Look, Android -> Scene Viewer, desktop -> QR code
+  const arBtn = document.getElementById("arBtn"), arDialog = document.getElementById("arDialog");
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(ua);
+  const quickLook = isIOS && document.createElement("a").relList.supports("ar");
+  const pageUrl = () => location.href.split("#")[0];
+  const currentCw = () => {
+    const el = document.querySelector("input[name=colorway]:checked");
+    return { key: el.id.slice(3), name: el.value };
+  };
+  const openLink = (href, attrs = {}) => {
+    const a = document.createElement("a");
+    for (const [k, v] of Object.entries(attrs)) a.setAttribute(k, v);
+    a.href = href;
+    if (attrs.rel === "ar") a.append(document.createElement("img")); // Safari only treats rel=ar links with an <img> child as AR
+    a.click();
+  };
+  function showArDialog(title, msg, qrUrl) {
+    document.getElementById("arTitle").textContent = title;
+    document.getElementById("arMsg").textContent = msg;
+    const qr = document.getElementById("arQr"), urlEl = document.getElementById("arUrl");
+    qr.hidden = urlEl.hidden = !qrUrl;
+    if (qrUrl) {
+      urlEl.textContent = qrUrl;
+      qr.innerHTML = "";
+      loadQrLib().then(() => {
+        const code = qrcode(0, "M");
+        code.addData(qrUrl);
+        code.make();
+        qr.innerHTML = code.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "QR code for " + qrUrl });
+      }).catch(() => { qr.hidden = true; }); // the URL text below still works
+    }
+    if (!arDialog.open) arDialog.showModal();
+  }
+  let qrLib;
+  const loadQrLib = () => qrLib ||= new Promise((resolve, reject) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
+    sc.integrity = "sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k";
+    sc.crossOrigin = "anonymous";
+    sc.onload = resolve;
+    sc.onerror = () => { qrLib = null; reject(); };
+    document.head.append(sc);
+  });
+
+  arBtn.addEventListener("click", async () => {
+    const cw = currentCw();
+    if (quickLook) {
+      if (!window.__haloUSDZ) { showArDialog("Almost ready", "The 3D model is still loading. Try again in a moment."); return; }
+      const label = arBtn.querySelector("span"), text = label.textContent;
+      arBtn.setAttribute("aria-busy", "true"); label.textContent = "Preparing AR…";
+      try {
+        const url = await window.__haloUSDZ(cw.key);
+        openLink(url + "#allowsContentScaling=0", { rel: "ar", download: `HALO-1-${cw.key}.usdz` });
+      } catch (e) {
+        console.error("USDZ export failed", e);
+        showArDialog("AR unavailable", "Something went wrong preparing the AR model. Try reloading the page.");
+      } finally { arBtn.removeAttribute("aria-busy"); label.textContent = text; }
+    } else if (isAndroid) {
+      const params = new URLSearchParams({
+        file: new URL(`ar/halo1-${cw.key}.glb`, location.href).href,
+        mode: "ar_only", resizable: "false", title: `HALO 1 · ${cw.name}`, link: pageUrl(),
+      });
+      openLink(`intent://arvr.google.com/scene-viewer/1.0?${params}#Intent;scheme=https;package=com.google.ar.core;` +
+        `action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(pageUrl() + "#no-ar")};end;`);
+    } else if (isIOS) {
+      showArDialog("Open in Safari", "AR Quick Look only works in Safari. Open this page in Safari, then tap View on your floor.");
+    } else {
+      const u = new URL(pageUrl());
+      u.searchParams.set("cw", cw.key);
+      showArDialog("Open it on your phone", "Scan with your phone's camera, then tap View on your floor to see HALO 1 at real size.", u.href);
+    }
+  });
+  // Scene Viewer sends Android phones without ARCore back here with #no-ar
+  const noAr = () => {
+    if (location.hash !== "#no-ar") return;
+    history.replaceState(null, "", pageUrl());
+    showArDialog("AR unavailable", "This phone can't open AR. It needs Google Play Services for AR (ARCore).");
+  };
+  noAr();
+  addEventListener("hashchange", noAr);
 
   const form = document.getElementById("entry"), note = document.getElementById("entryNote");
   form.addEventListener("submit", e => {
@@ -736,6 +868,29 @@ function applyColorway(input) {
   wake();
 }
 document.getElementById("colorways").addEventListener("change", e => applyColorway(e.target));
+
+/* ---------------- AR Quick Look (iOS) ---------------- */
+// Export the assembled shoe in its current colorway as USDZ, at real size with the sole on the floor.
+// Android uses the prebuilt ar/halo1-<colorway>.glb files instead (tools/build_ar_models.py).
+const AR_LENGTH_M = 0.27;   // heel-to-toe, US M9 (keep in sync with tools/build_ar_models.py)
+const usdzCache = {};
+async function exportUSDZ(key) {
+  if (usdzCache[key]) return usdzCache[key];
+  const { USDZExporter } = await import("three/addons/exporters/USDZExporter.js");
+  const shoe = model.clone();   // shares geometry and materials, so the colorway comes along
+  shoe.position.set(0, 0, 0);
+  shoe.traverse(o => { o.visible = true; if (o.userData.y0 !== undefined) o.position.y = o.userData.y0; });
+  const root = new THREE.Scene();
+  root.add(shoe);
+  root.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(shoe), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  const s = AR_LENGTH_M / Math.max(size.x, size.z);
+  shoe.scale.setScalar(s);
+  shoe.position.set(-c.x * s, -box.min.y * s, -c.z * s);
+  root.updateMatrixWorld(true);
+  const bytes = await new USDZExporter().parseAsync(root, { quickLookCompatible: true });
+  return usdzCache[key] = URL.createObjectURL(new Blob([bytes], { type: "model/vnd.usdz+zip" }));
+}
 
 /* ---------------- choreography ---------------- */
 const D = THREE.MathUtils.degToRad;
@@ -1004,6 +1159,7 @@ try {
   const gltf = await loadModel();
   prepModel(gltf);
   applyColorway(document.querySelector("input[name=colorway]:checked"));
+  window.__haloUSDZ = exportUSDZ;
   // warm both shader variants (opaque and fading) so the first fade doesn't stall on a compile
   const all = Object.values(fadeMats).flat();
   for (const f of all) { f.mat.transparent = true; f.mat.needsUpdate = true; }
