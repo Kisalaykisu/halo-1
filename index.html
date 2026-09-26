@@ -167,7 +167,12 @@
   .swatches input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 4px; }
   /* the AR button sits beside the swatches, out of flow, so the hero layout doesn't move */
   .cw-row { position: relative; }
-  .btn.ar-btn { position: absolute; left: 170px; bottom: -4px; }
+  .btn.ar-btn { position: absolute; left: 210px; bottom: -4px; }
+  /* 5th swatch: "Design your own". A dashed "+" until a design exists, then that design's colors */
+  .swatches label.cw-custom { display: grid; place-items: center; color: var(--ink); background: var(--ground); border: 1px dashed var(--ink-2); }
+  .swatches label.cw-custom svg { width: 14px; height: 14px; }
+  .swatches label.cw-custom.has-design { border-style: solid; border-color: var(--line); background: conic-gradient(from 45deg, var(--accent) 0 25%, var(--trim) 0 50%, var(--foam) 0); }
+  .swatches label.cw-custom.has-design svg { display: none; }
   .btn.ar-btn svg { width: 18px; height: 18px; flex: none; }
   .btn.ar-btn[aria-busy="true"] { cursor: progress; opacity: .7; }
   .ar-dialog { width: min(340px, calc(100vw - 32px)); box-sizing: border-box; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--ground); color: var(--ink); }
@@ -177,6 +182,47 @@
   .ar-dialog .qr { display: grid; place-items: center; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 14px; margin-bottom: 16px; aspect-ratio: 1; }
   .ar-dialog .qr svg { width: 100%; height: auto; display: block; }
   .ar-dialog .fine { overflow-wrap: anywhere; margin-bottom: 16px; }
+  .ar-dialog form { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  /* ---------- designer ("Design your own") ---------- */
+  /* while designing, the hero column shows only the designer; on phones it sits at the bottom and the shoe moves up */
+  .hero.designing > :not(.designer) { display: none !important; }
+  .hero.designing { pointer-events: none !important; }   /* let drags reach the shoe */
+  .hero.designing .designer { pointer-events: auto; }
+  .designer {
+    display: grid; gap: 14px; max-width: 460px;
+    background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line); border-radius: 8px; padding: 18px;
+  }
+  .dz-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .dz-head h2 { margin: 0; font: 800 36px/.95 var(--display); font-stretch: 70%; font-variation-settings: "wdth" 70; outline: none; }
+  .dz-row { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; align-items: center; }
+  .dz-row > .eyebrow, .dz-part .dz-lbl { font-size: 11px; letter-spacing: .1em; }
+  .dz-name input {
+    width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--ground); color: var(--ink); font: 500 15px/1 var(--body);
+  }
+  .dz-name input::placeholder { color: var(--muted); }
+  .dz-presets { display: flex; gap: 10px; }
+  .dz-presets button {
+    width: 26px; height: 26px; padding: 0; border-radius: 50%; cursor: pointer; border: 1px solid var(--line);
+    background: conic-gradient(from 45deg, var(--accent) 0 25%, var(--trim) 0 50%, var(--foam) 0);
+  }
+  .dz-presets button:hover { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--muted); }
+  .dz-tabs { display: none; }
+  .dz-parts { display: grid; gap: 10px; }
+  .dz-part .dz-lbl { display: grid; gap: 3px; color: var(--muted); }
+  .dz-part .dz-lbl b { font: 500 12px/1.2 var(--body); letter-spacing: 0; text-transform: none; color: var(--ink); overflow-wrap: anywhere; }
+  .dz-sw { display: grid; grid-template-columns: repeat(10, minmax(0, 28px)); gap: 6px; }
+  .dz-sw input { position: absolute; opacity: 0; pointer-events: none; }
+  .dz-sw label { aspect-ratio: 1; border-radius: 50%; cursor: pointer; background: var(--c); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+  .dz-sw input:checked + label { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--ink); }
+  .dz-sw input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .dz-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .dz-actions .btn svg { width: 18px; height: 18px; flex: none; }
+  .dz-actions .btn[aria-busy="true"] { cursor: progress; opacity: .7; }
+  .dz-note { margin: 0; font: 500 12px/1.45 var(--mono); color: var(--muted); }
+  .dz-note:empty { display: none; }
+  .dz-note a { overflow-wrap: anywhere; }
   .hint { font: 500 12px/1.4 var(--mono); color: var(--muted); display: flex; gap: 8px; align-items: center; }
   .hint i { display: inline-block; width: 22px; height: 1px; background: var(--muted); }
 
@@ -276,6 +322,10 @@
   .sizes input:checked + label { background: var(--ink); color: var(--ground); border-color: var(--ink); }
   .sizes input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 2px; }
   .fine { font: 500 12px/1.5 var(--mono); color: var(--muted); margin: 0; }
+  .design-colors { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: -4px 0 0; padding: 0; list-style: none; font: 500 12px/1.4 var(--mono); color: var(--ink-2); }
+  .design-colors li { display: flex; align-items: center; gap: 6px; }
+  .design-colors i { width: 12px; height: 12px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); flex: none; }
+  .design-colors span { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; }
   .confirm { font: 500 14px/1.5 var(--body); padding: 12px 14px; border-radius: 6px; background: color-mix(in srgb, var(--lime) 28%, var(--surface)); border: 1px solid var(--line); }
 
   footer { padding: 40px var(--gutter) calc(40px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--ground); position: relative; z-index: 2; }
@@ -300,9 +350,32 @@
     .studio { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .tag { font-size: 11px; padding: 5px 7px; }
     .cw-row { order: 1; margin-top: auto; margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px); }
+    .designer { margin-top: auto; margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); padding: 14px; gap: 12px; width: 100%; max-width: 480px; }
+    .dz-head h2 { font-size: 30px; }
+    .dz-row { grid-template-columns: 68px minmax(0, 1fr); }
+    /* phones: one part at a time, picked from a row of tabs */
+    .dz-tabs { display: flex; gap: 4px; }
+    .dz-tabs input { position: absolute; opacity: 0; pointer-events: none; }
+    .dz-tabs label {
+      flex: 1 1 auto; text-align: center; white-space: nowrap; cursor: pointer;
+      padding: 8px 4px 9px; border: 1px solid var(--line); border-radius: 4px; font: 500 13px/1 var(--body);
+      box-shadow: inset 0 -3px 0 var(--c);
+    }
+    .dz-tabs input:checked + label { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+    .dz-tabs input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .dz-part:not(.on) { display: none; }
+    .dz-part.dz-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .dz-part .dz-lbl { display: flex; gap: 8px; align-items: baseline; }
+    .dz-sw { grid-template-columns: repeat(10, minmax(0, 1fr)); max-width: 340px; }
   }
-  @media (max-width: 369px) {
+  @media (max-width: 440px) {
+    /* five swatches plus the AR button don't fit on one line on phones */
     .btn.ar-btn { position: static; margin-top: 12px; }
+  }
+  @media (max-width: 400px) {
+    .dz-head h2 { font-size: 26px; }
+    .dz-actions .btn { padding: 0 13px; font-size: 13px; }
+    .dz-actions .btn svg { display: none; }
   }
   @media (max-width: 420px) {
     .facts .fact:nth-child(3) { display: none; }
@@ -348,6 +421,7 @@
           <input type="radio" name="colorway" id="cw-tide" value="Tide / Ink / Signal Coral" aria-label="Tide / Ink / Signal Coral" autocomplete="off" data-upper="#bfe3ea" data-foam="#e3eef0" data-base="#c4dde3" data-trim="#14233a" data-accent="#ff4a2e"><label for="cw-tide" title="Tide / Ink / Signal Coral" style="--foam:#e3eef0;--trim:#14233a;--accent:#ff4a2e"></label>
           <input type="radio" name="colorway" id="cw-dune" value="Dune / Umber / Signal Orange" aria-label="Dune / Umber / Signal Orange" autocomplete="off" data-upper="#f3e6cf" data-foam="#efe4d0" data-base="#dcc9a8" data-trim="#3d2c20" data-accent="#ff7300"><label for="cw-dune" title="Dune / Umber / Signal Orange" style="--foam:#efe4d0;--trim:#3d2c20;--accent:#ff7300"></label>
           <input type="radio" name="colorway" id="cw-midnight" value="Midnight / Carbon / Signal Pink" aria-label="Midnight / Carbon / Signal Pink" autocomplete="off" data-upper="#383f46" data-foam="#2a3036" data-base="#1d2226" data-trim="#0d0f11" data-accent="#ff2e93"><label for="cw-midnight" title="Midnight / Carbon / Signal Pink" style="--foam:#2a3036;--trim:#0d0f11;--accent:#ff2e93"></label>
+          <input type="radio" name="colorway" id="cw-custom" value="custom" aria-label="Design your own" aria-controls="designer" autocomplete="off"><label for="cw-custom" class="cw-custom" title="Design your own"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2.5v11M2.5 8h11"/></svg></label>
         </div>
       </fieldset>
       <button class="btn ghost small ar-btn" type="button" id="arBtn">
@@ -360,6 +434,26 @@
         <a class="btn ghost" href="#inside" id="seeInside">See inside</a>
       </div>
       <div class="hint"><i></i>Drag to turn it. Scroll to take it apart.</div>
+
+      <section class="designer" id="designer" aria-labelledby="dzTitle" hidden>
+        <div class="dz-head">
+          <h2 id="dzTitle" tabindex="-1">Design your own</h2>
+          <button class="btn ghost small" type="button" id="dzDone">Done</button>
+        </div>
+        <label class="dz-row dz-name"><span class="eyebrow">Name</span><input id="dzName" type="text" maxlength="40" placeholder="e.g. Night Run" autocomplete="off" spellcheck="false" enterkeyhint="done"></label>
+        <div class="dz-row"><span class="eyebrow" id="dzStartLbl">Start from</span><div class="dz-presets" id="dzPresets" role="group" aria-labelledby="dzStartLbl"></div></div>
+        <div class="dz-tabs" id="dzTabs" role="radiogroup" aria-label="Part to color"></div>
+        <div class="dz-parts" id="dzParts"></div>
+        <div class="dz-actions">
+          <button class="btn small" type="button" id="dzCopy">Copy link</button>
+          <button class="btn ghost small" type="button" id="dzAr">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>
+            <span>View on your floor</span>
+          </button>
+        </div>
+        <p class="dz-note" id="dzStatus" role="status"></p>
+        <p class="dz-note" id="dzArNote"></p>
+      </section>
     </div>
 
     <div class="cap" data-range="0.11 0.31" id="inside">
@@ -404,7 +498,7 @@
   <div class="qr" id="arQr" hidden></div>
   <p id="arMsg"></p>
   <p class="fine" id="arUrl" hidden></p>
-  <form method="dialog"><button class="btn ghost small">Close</button></form>
+  <form method="dialog"><button class="btn small" type="button" id="arGo" hidden></button><button class="btn ghost small">Close</button></form>
 </dialog>
 
 <main class="after">
@@ -526,6 +620,7 @@
       </div>
       <form class="entry" id="entry" novalidate>
         <div class="price"><strong>$325</strong><span id="cwLabel">HALO 1 · Frost / Graphite / Signal Lime</span></div>
+        <ul class="design-colors" id="drawColors" aria-label="Colors"></ul>
         <fieldset>
           <legend>US men's size</legend>
           <div class="sizes" id="sizes"></div>
@@ -565,15 +660,184 @@
   const sizes = document.getElementById("sizes");
   const list = ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"];
   sizes.innerHTML = list.map((s, i) => `<input type="radio" name="size" id="size-${i}" value="${s}"><label for="size-${i}">${s}</label>`).join("");
-  // colorway picker: labels here; the 3D model recolors itself from the same inputs
-  const cwName = document.getElementById("cwName"), cwLabel = document.getElementById("cwLabel");
+
+  // ---------- designs: the four preset colorways, plus "Design your own" ----------
+  // A design is { key, name, colors: { upper, foam, base, trim, accent }, custom }. The 3D model (module script
+  // below) recolors itself on the "halo:design" event and reads window.__haloDesign() once it has loaded.
+  const SLOTS = ["upper", "foam", "base", "trim", "accent"];
+  // curated palette per part; the first four are the preset colorways' own colors, so every preset is a valid start
+  const PARTS = {
+    upper: ["Upper", [["Frost", "#ffffff"], ["Tide", "#bfe3ea"], ["Dune", "#f3e6cf"], ["Midnight", "#383f46"], ["Volt", "#e2f58c"],
+      ["Blush", "#f6c9c2"], ["Lilac", "#d3c8f4"], ["Cobalt", "#3b5bd6"], ["Pine", "#2f5f4b"], ["Ember", "#e0482c"]]],
+    foam: ["Foam", [["Frost", "#dce4e8"], ["Tide", "#e3eef0"], ["Dune", "#efe4d0"], ["Midnight", "#2a3036"], ["Chalk", "#f5f4ee"],
+      ["Volt", "#d9f25e"], ["Peach", "#f7c9a8"], ["Lilac", "#d8cff5"], ["Slate", "#7d8b95"], ["Coral", "#ff7d62"]]],
+    base: ["Sole base", [["Frost", "#cfd9de"], ["Tide", "#c4dde3"], ["Sand", "#dcc9a8"], ["Carbon", "#1d2226"], ["Bone", "#e9e4d8"],
+      ["Signal Lime", "#c9f24b"], ["Clay", "#c7775a"], ["Storm", "#56636c"], ["Cobalt", "#3553c6"], ["Signal Pink", "#ff2e93"]]],
+    trim: ["Trim", [["Graphite", "#2b2f35"], ["Ink", "#14233a"], ["Umber", "#3d2c20"], ["Carbon", "#0d0f11"], ["Silver", "#b8c1c7"],
+      ["Olive", "#4b5331"], ["Oxblood", "#5c1f26"], ["Cobalt", "#2c4bb8"], ["Signal Lime", "#c9f24b"], ["White", "#f3f5f6"]]],
+    accent: ["Laces", [["Signal Lime", "#c9f24b"], ["Signal Coral", "#ff4a2e"], ["Signal Orange", "#ff7300"], ["Signal Pink", "#ff2e93"], ["Signal Yellow", "#ffd400"],
+      ["Signal Blue", "#2f7bff"], ["Violet", "#8b4dff"], ["Aqua", "#1fd1c1"], ["White", "#f4f6f7"], ["Black", "#15181b"]]],
+  };
+  const DEFAULT_NAME = "Custom design";
+  const HEX = /^[0-9a-f]{6}$/;
+  const cleanName = s => String(s || "").replace(/[\u0000-\u001f\u007f]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+  const colorName = (slot, hex) => (PARTS[slot][1].find(c => c[1] === hex) || [hex.toUpperCase()])[0];
+  const pageUrl = () => location.href.split("#")[0];
+
+  const customInput = document.getElementById("cw-custom"), customLabel = customInput.nextElementSibling;
+  const presets = [...document.querySelectorAll("input[name=colorway]")].filter(el => el !== customInput).map(el => ({
+    key: el.id.slice(3), name: el.value, custom: false, colors: Object.fromEntries(SLOTS.map(s => [s, el.dataset[s].toLowerCase()])),
+  }));
+  let custom = null;          // { name, colors } once the visitor has started a design (or opened a shared one)
+  let lastPreset = presets[0];
+  const current = () => {
+    if (customInput.checked && custom) return { key: "custom", name: custom.name || DEFAULT_NAME, colors: { ...custom.colors }, custom: true };
+    const el = document.querySelector("input[name=colorway]:checked");
+    return presets.find(p => el && el.id === "cw-" + p.key) || presets[0];
+  };
+  window.__haloDesign = current;
+
+  // Android AR only has the four prebuilt preset files, so a custom design falls back to the nearest one
+  // (weighted CIELAB distance per part; the big surfaces count most)
+  const lab = hex => {
+    const [r, g, b] = [1, 3, 5].map(i => { const c = parseInt(hex.slice(i, i + 2), 16) / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+    const f = t => t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116;
+    const x = f((0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.95047), y = f(0.2126 * r + 0.7152 * g + 0.0722 * b), z = f((0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.08883);
+    return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+  };
+  const WEIGHT = { upper: 3, foam: 2.5, base: 1.5, trim: 1, accent: 2 };
+  const closestPreset = colors => {
+    let best = presets[0], bestD = Infinity;
+    for (const p of presets) {
+      const d = SLOTS.reduce((sum, s) => { const a = lab(colors[s]), b = lab(p.colors[s]); return sum + WEIGHT[s] * Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); }, 0);
+      if (d < bestD) { bestD = d; best = p; }
+    }
+    return best;
+  };
+
+  // links: ?cw=dune for a preset, ?design=<upper>-<foam>-<base>-<trim>-<laces>&name=… for a custom design
+  function designUrl(d) {
+    const u = new URL(pageUrl());
+    for (const k of ["cw", "design", "name"]) u.searchParams.delete(k);
+    if (d.custom) {
+      u.searchParams.set("design", SLOTS.map(s => d.colors[s].slice(1)).join("-"));
+      if (custom.name) u.searchParams.set("name", custom.name);
+    } else u.searchParams.set("cw", d.key);
+    return u.href;
+  }
+  const params = new URLSearchParams(location.search);
+  const shared = (params.get("design") || "").toLowerCase().split("-");
+  if (shared.length === SLOTS.length && shared.every(h => HEX.test(h))) {
+    custom = { name: cleanName(params.get("name")), colors: Object.fromEntries(SLOTS.map((s, i) => [s, "#" + shared[i]])) };
+    customInput.checked = true;
+  } else {
+    // ?cw=dune preselects a colorway (the desktop QR code carries the current one to the phone)
+    const cwParam = document.getElementById("cw-" + params.get("cw"));
+    if (cwParam && cwParam.name === "colorway" && cwParam !== customInput) cwParam.checked = true;
+  }
+  // keep the address bar on the current design once it's anything but the plain page, so reloading or
+  // opening the page in another browser keeps it (debounced: Safari throttles replaceState)
+  let urlTimer;
+  const syncUrl = () => {
+    clearTimeout(urlTimer);
+    urlTimer = setTimeout(() => {
+      const p = new URLSearchParams(location.search), d = current();
+      if (!d.custom && !p.has("cw") && !p.has("design")) return;
+      try { history.replaceState(history.state, "", designUrl(d) + location.hash); } catch (e) { /* not fatal */ }
+    }, 300);
+  };
+
+  // designer controls
+  const hero = document.getElementById("hero"), designer = document.getElementById("designer");
+  const dzName = document.getElementById("dzName"), dzParts = document.getElementById("dzParts"), dzTabs = document.getElementById("dzTabs");
+  const dzStatus = document.getElementById("dzStatus"), dzArNote = document.getElementById("dzArNote");
+  const swatchVars = (el, c) => { el.style.setProperty("--foam", c.foam); el.style.setProperty("--trim", c.trim); el.style.setProperty("--accent", c.accent); };
+  for (const p of presets) {
+    const b = document.createElement("button");
+    b.type = "button"; b.title = p.name; b.setAttribute("aria-label", "Start from " + p.name);
+    swatchVars(b, p.colors);
+    b.addEventListener("click", () => { custom.colors = { ...p.colors }; update(true); });
+    document.getElementById("dzPresets").append(b);
+  }
+  dzTabs.innerHTML = SLOTS.map((s, i) => `<input type="radio" name="dz-part" id="dzt-${s}" value="${s}" autocomplete="off"${i ? "" : " checked"}><label for="dzt-${s}">${PARTS[s][0]}</label>`).join("");
+  dzParts.innerHTML = SLOTS.map((s, i) => `<div class="dz-row dz-part${i ? "" : " on"}" data-part="${s}" role="radiogroup" aria-label="${PARTS[s][0]} color">` +
+    `<span class="eyebrow dz-lbl" aria-hidden="true">${PARTS[s][0]}<b id="dzc-${s}"></b></span><div class="dz-sw">` +
+    PARTS[s][1].map(([n, hex], j) => `<input type="radio" name="dz-${s}" id="dz-${s}-${j}" value="${hex}" aria-label="${n}" autocomplete="off"><label for="dz-${s}-${j}" title="${n}" style="--c:${hex}"></label>`).join("") +
+    `</div></div>`).join("");
+  dzTabs.addEventListener("change", e => { for (const el of dzParts.children) el.classList.toggle("on", el.dataset.part === e.target.value); });
+  dzParts.addEventListener("change", e => { custom.colors[e.target.name.slice(3)] = e.target.value; update(true); });
+  dzName.addEventListener("input", () => { custom.name = cleanName(dzName.value); update(true); });
+  dzName.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); dzName.blur(); } });
+
+  function setDesigning(on) {
+    designer.hidden = !on;
+    hero.classList.toggle("designing", on);
+    document.dispatchEvent(new CustomEvent("halo:designing", { detail: on }));
+    if (on) { dzName.value = custom.name; document.getElementById("dzTitle").focus({ preventScroll: true }); }
+  }
+  function startDesigning() {
+    custom ||= { name: "", colors: { ...lastPreset.colors } };   // a new design starts from the colorway you were on
+    if (designer.hidden) setDesigning(true);
+  }
+  // clicking the "+" swatch again (already checked, so no change event) reopens the designer
+  customInput.addEventListener("click", startDesigning);
+  document.getElementById("dzDone").addEventListener("click", () => { setDesigning(false); customInput.focus(); });
+  designer.addEventListener("keydown", e => { if (e.key === "Escape" && !e.defaultPrevented) { setDesigning(false); customInput.focus(); } });
   document.getElementById("colorways").addEventListener("change", e => {
-    cwName.textContent = e.target.value;
-    cwLabel.textContent = "HALO 1 · " + e.target.value;
+    if (e.target === customInput) startDesigning();
+    update(true);
   });
-  // ?cw=dune preselects a colorway (the desktop QR code carries the current one to the phone)
-  const cwParam = document.getElementById("cw-" + new URLSearchParams(location.search).get("cw"));
-  if (cwParam && cwParam.name === "colorway") { cwParam.checked = true; cwParam.dispatchEvent(new Event("change", { bubbles: true })); }
+
+  // everything that shows the current design: legend, "+" swatch, designer, draw section, AR note, 3D model
+  const cwName = document.getElementById("cwName"), cwLabel = document.getElementById("cwLabel"), drawColors = document.getElementById("drawColors");
+  function update(fromUser) {
+    const d = current();
+    if (!d.custom) lastPreset = d;
+    cwName.textContent = d.name;
+    cwLabel.textContent = "HALO 1 · " + d.name;
+    drawColors.replaceChildren(...SLOTS.map(s => {
+      const li = document.createElement("li"), dot = document.createElement("i"), part = document.createElement("span");
+      dot.style.background = d.colors[s]; part.textContent = PARTS[s][0];
+      li.append(dot, part, colorName(s, d.colors[s]));
+      return li;
+    }));
+    if (custom) {
+      customLabel.classList.add("has-design");
+      swatchVars(customLabel, custom.colors);
+      customLabel.title = "Your design: " + (custom.name || DEFAULT_NAME);
+      for (const s of SLOTS) {
+        for (const r of dzParts.querySelectorAll(`input[name=dz-${s}]`)) r.checked = r.value === custom.colors[s];
+        document.getElementById("dzc-" + s).textContent = colorName(s, custom.colors[s]);
+        document.querySelector(`label[for=dzt-${s}]`).style.setProperty("--c", custom.colors[s]);
+      }
+      const near = closestPreset(custom.colors).name;
+      dzArNote.textContent = isIOS ? "" : isAndroid
+        ? `On Android, View on your floor shows the closest preset, ${near}, not your exact colors.`
+        : `In AR, iPhone and iPad show your exact design. Android phones show the closest preset, ${near}.`;
+    }
+    if (fromUser) { dzStatus.textContent = ""; syncUrl(); }
+    document.dispatchEvent(new CustomEvent("halo:design", { detail: d }));
+  }
+
+  // "Copy link": clipboard API, then the old execCommand path, then show the link to copy by hand
+  const dzCopy = document.getElementById("dzCopy");
+  let copyTimer;
+  dzCopy.addEventListener("click", async () => {
+    const d = current(), url = designUrl(d);
+    let ok = false;
+    try { await navigator.clipboard.writeText(url); ok = true; } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = url; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+      document.body.append(ta); ta.select();
+      try { ok = document.execCommand("copy"); } catch (e2) { ok = false; }
+      ta.remove();
+    }
+    dzStatus.textContent = ok ? `Link copied. It opens HALO 1 in ${d.name}.` : `Copy this link to share ${d.name}: ${url}`;
+    if (ok) {
+      dzCopy.textContent = "Copied";
+      clearTimeout(copyTimer); copyTimer = setTimeout(() => { dzCopy.textContent = "Copy link"; }, 2000);
+    }
+  });
 
   // "View on your floor": iPhone/iPad -> AR Quick Look, Android -> Scene Viewer, desktop -> QR code
   const arBtn = document.getElementById("arBtn"), arDialog = document.getElementById("arDialog");
@@ -581,11 +845,6 @@
   const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isAndroid = /Android/i.test(ua);
   const quickLook = isIOS && document.createElement("a").relList.supports("ar");
-  const pageUrl = () => location.href.split("#")[0];
-  const currentCw = () => {
-    const el = document.querySelector("input[name=colorway]:checked");
-    return { key: el.id.slice(3), name: el.value };
-  };
   const openLink = (href, attrs = {}) => {
     const a = document.createElement("a");
     for (const [k, v] of Object.entries(attrs)) a.setAttribute(k, v);
@@ -593,10 +852,10 @@
     if (attrs.rel === "ar") a.append(document.createElement("img")); // Safari only treats rel=ar links with an <img> child as AR
     a.click();
   };
-  function showArDialog(title, msg, qrUrl) {
+  function showArDialog(title, msg, qrUrl, action) {
     document.getElementById("arTitle").textContent = title;
     document.getElementById("arMsg").textContent = msg;
-    const qr = document.getElementById("arQr"), urlEl = document.getElementById("arUrl");
+    const qr = document.getElementById("arQr"), urlEl = document.getElementById("arUrl"), go = document.getElementById("arGo");
     qr.hidden = urlEl.hidden = !qrUrl;
     if (qrUrl) {
       urlEl.textContent = qrUrl;
@@ -608,6 +867,9 @@
         qr.innerHTML = code.createSvgTag({ cellSize: 4, margin: 0, scalable: true, alt: "QR code for " + qrUrl });
       }).catch(() => { qr.hidden = true; }); // the URL text below still works
     }
+    go.hidden = !action;
+    go.onclick = action ? () => { arDialog.close(); action.run(); } : null;
+    if (action) go.textContent = action.label;
     if (!arDialog.open) arDialog.showModal();
   }
   let qrLib;
@@ -620,35 +882,48 @@
     sc.onerror = () => { qrLib = null; reject(); };
     document.head.append(sc);
   });
+  const sceneViewer = p => {
+    const params = new URLSearchParams({
+      file: new URL(`ar/halo1-${p.key}.glb`, location.href).href,
+      mode: "ar_only", resizable: "false", title: `HALO 1 · ${p.name}`, link: pageUrl(),
+    });
+    openLink(`intent://arvr.google.com/scene-viewer/1.0?${params}#Intent;scheme=https;package=com.google.ar.core;` +
+      `action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(pageUrl() + "#no-ar")};end;`);
+  };
 
-  arBtn.addEventListener("click", async () => {
-    const cw = currentCw();
+  async function startAr(btn) {
+    const d = current();
     if (quickLook) {
       if (!window.__haloUSDZ) { showArDialog("Almost ready", "The 3D model is still loading. Try again in a moment."); return; }
-      const label = arBtn.querySelector("span"), text = label.textContent;
-      arBtn.setAttribute("aria-busy", "true"); label.textContent = "Preparing AR…";
+      const label = btn.querySelector("span"), text = label.textContent;
+      btn.setAttribute("aria-busy", "true"); label.textContent = "Preparing AR…";
       try {
-        const url = await window.__haloUSDZ(cw.key);
-        openLink(url + "#allowsContentScaling=0", { rel: "ar", download: `HALO-1-${cw.key}.usdz` });
+        // the export uses the live materials, so a custom design shows exactly; its cache key is its colors
+        const key = d.custom ? "custom-" + SLOTS.map(s => d.colors[s].slice(1)).join("") : d.key;
+        const url = await window.__haloUSDZ(key);
+        openLink(url + "#allowsContentScaling=0", { rel: "ar", download: `HALO-1-${d.custom ? "custom" : d.key}.usdz` });
       } catch (e) {
         console.error("USDZ export failed", e);
         showArDialog("AR unavailable", "Something went wrong preparing the AR model. Try reloading the page.");
-      } finally { arBtn.removeAttribute("aria-busy"); label.textContent = text; }
+      } finally { btn.removeAttribute("aria-busy"); label.textContent = text; }
     } else if (isAndroid) {
-      const params = new URLSearchParams({
-        file: new URL(`ar/halo1-${cw.key}.glb`, location.href).href,
-        mode: "ar_only", resizable: "false", title: `HALO 1 · ${cw.name}`, link: pageUrl(),
-      });
-      openLink(`intent://arvr.google.com/scene-viewer/1.0?${params}#Intent;scheme=https;package=com.google.ar.core;` +
-        `action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(pageUrl() + "#no-ar")};end;`);
+      if (!d.custom) { sceneViewer(d); return; }
+      const near = closestPreset(d.colors);
+      showArDialog("Closest preset on Android",
+        `Android AR can only show the four preset colorways, not custom colors. ${d.name} will open as the closest preset, ${near.name}. On iPhone and iPad, AR shows your exact design.`,
+        null, { label: "Open " + near.name.split(" / ")[0] + " in AR", run: () => sceneViewer(near) });
     } else if (isIOS) {
-      showArDialog("Open in Safari", "AR Quick Look only works in Safari. Open this page in Safari, then tap View on your floor.");
+      showArDialog("Open in Safari", d.custom
+        ? "AR Quick Look only works in Safari. Open this page in Safari (the link keeps your design), then tap View on your floor."
+        : "AR Quick Look only works in Safari. Open this page in Safari, then tap View on your floor.");
     } else {
-      const u = new URL(pageUrl());
-      u.searchParams.set("cw", cw.key);
-      showArDialog("Open it on your phone", "Scan with your phone's camera, then tap View on your floor to see HALO 1 at real size.", u.href);
+      showArDialog("Open it on your phone", d.custom
+        ? `Scan with your phone's camera, then tap View on your floor. iPhone and iPad show ${d.name} exactly; Android phones show the closest preset, ${closestPreset(d.colors).name}.`
+        : "Scan with your phone's camera, then tap View on your floor to see HALO 1 at real size.", designUrl(d));
     }
-  });
+  }
+  arBtn.addEventListener("click", () => startAr(arBtn));
+  document.getElementById("dzAr").addEventListener("click", e => startAr(e.currentTarget));
   // Scene Viewer sends Android phones without ARCore back here with #no-ar
   const noAr = () => {
     if (location.hash !== "#no-ar") return;
@@ -657,6 +932,7 @@
   };
   noAr();
   addEventListener("hashchange", noAr);
+  update(false);
 
   const form = document.getElementById("entry"), note = document.getElementById("entryNote");
   form.addEventListener("submit", e => {
@@ -664,7 +940,7 @@
     const v = form.querySelector("input[name=size]:checked");
     if (!v) { note.textContent = "Choose a size first, then enter."; note.className = "fine"; return; }
     note.className = "confirm";
-    note.textContent = `You're in the draw for US M${v.value}. This is a concept page, so no entry or order was actually placed.`;
+    note.textContent = `You're in the draw for US M${v.value} in ${current().name}. This is a concept page, so no entry or order was actually placed.`;
   });
 
   // spec profile drawn from the same functions as the Blender model
@@ -859,15 +1135,18 @@ function prepModel(gltf) {
   for (const g of Object.values(G)) g.userData.y0 = g.position.y;
 }
 
-/* ---------------- colorways ---------------- */
-// each swatch input carries its colors as data-* attributes; the upper color tints the hex mesh texture
+/* ---------------- colorways and custom designs ---------------- */
+// the page script owns the current design (a preset swatch or "Design your own") and announces every change;
+// the upper color tints the hex mesh texture
 const CW_SLOTS = { upper: ["M_UpperMesh"], foam: ["M_Foam"], base: ["M_FoamBase"], trim: ["M_Graphite", "M_Eyestay"], accent: ["M_Lace", "M_Eyelet"] };
-function applyColorway(input) {
-  if (!input) return;
-  for (const [slot, names] of Object.entries(CW_SLOTS)) for (const n of names) mats[n]?.color.set(input.dataset[slot]);
+function applyColors(colors) {
+  for (const [slot, names] of Object.entries(CW_SLOTS)) for (const n of names) mats[n]?.color.set(colors[slot]);
   wake();
 }
-document.getElementById("colorways").addEventListener("change", e => applyColorway(e.target));
+document.addEventListener("halo:design", e => applyColors(e.detail.colors));
+// while the designer is open on a phone it covers the lower half of the screen, so the shoe eases up above it
+let designOn = false, designT = 0, designNy = 0, designZoom = 1;
+document.addEventListener("halo:designing", e => { designOn = e.detail; wake(); });
 
 /* ---------------- AR Quick Look (iOS) ---------------- */
 // Export the assembled shoe in its current colorway as USDZ, at real size with the sole on the floor.
@@ -876,10 +1155,19 @@ const AR_LENGTH_M = 0.27;   // heel-to-toe, US M9 (keep in sync with tools/build
 const usdzCache = {};
 async function exportUSDZ(key) {
   if (usdzCache[key]) return usdzCache[key];
+  // keep one custom export at a time; each is a few MB of blob
+  if (key.startsWith("custom")) for (const k of Object.keys(usdzCache)) if (k.startsWith("custom")) { URL.revokeObjectURL(usdzCache[k]); delete usdzCache[k]; }
+  // snapshot the colors now: the visitor can keep picking while the exporter loads, and the file must match its key
+  const colors = window.__haloDesign().colors;
   const { USDZExporter } = await import("three/addons/exporters/USDZExporter.js");
-  const shoe = model.clone();   // shares geometry and materials, so the colorway comes along
+  const shoe = model.clone();   // shares geometry and materials; the recolorable ones get their own copies below
   shoe.position.set(0, 0, 0);
-  shoe.traverse(o => { o.visible = true; if (o.userData.y0 !== undefined) o.position.y = o.userData.y0; });
+  const own = {};
+  shoe.traverse(o => {
+    o.visible = true; if (o.userData.y0 !== undefined) o.position.y = o.userData.y0;
+    const slot = o.isMesh && Object.keys(CW_SLOTS).find(k => CW_SLOTS[k].includes(o.material.name));
+    if (slot) { o.material = own[o.material.name] ||= o.material.clone(); o.material.color.set(colors[slot]); }
+  });
   const root = new THREE.Scene();
   root.add(shoe);
   root.updateMatrixWorld(true);
@@ -1031,6 +1319,10 @@ function frame(now) {
   }
   lastScrollP = prog;
 
+  const dk = reduceMotion ? 1 : 1 - Math.exp(-dt * 8), dTarget = designOn ? 1 : 0;
+  designT += (dTarget - designT) * dk;
+  if (Math.abs(dTarget - designT) < 1e-3) designT = dTarget; else moving = true;
+
   if (dirty || moving) render(prog);
   dirty = false;
 
@@ -1053,13 +1345,24 @@ function render(p) {
   pitchG.rotation.x = D(s.pitch + userPitch);
   const aspect = W / H;
   const tv = Math.tan(D(camera.fov) / 2), th = tv * aspect;
-  // half-width of the view at the model, sized so the shoe fills ~55% (desktop) / ~78% (phone) of the width
-  const halfW = (isNarrow ? 0.185 : 0.27) / s.zoom;
-  const halfH = (isNarrow ? 0.20 : 0.15) / s.zoom;
-  const dist = Math.max(halfW / th, halfH / tv);
   // desktop: shoe sits right of the text column; phone: below the headline in the hero
   const nx = isNarrow ? 0 : 0.20 + 0.04 * shift;
-  const ny = isNarrow ? (-0.10 * s.shift - 0.06) : 0.02;
+  let ny = isNarrow ? (-0.10 * s.shift - 0.06) : 0.02, zoom = s.zoom;
+  if (isNarrow && designT > 0) {
+    // designing on a phone: centre the shoe between the header and the top of the designer panel, smaller if it's tight
+    if (designOn) {
+      const top = sticky.getBoundingClientRect().top, head = document.querySelector(".bar").getBoundingClientRect().bottom - top;
+      const panel = document.getElementById("designer").getBoundingClientRect().top - top;
+      if (panel > head) { designNy = 1 - (head + panel) / H - 0.04; designZoom = THREE.MathUtils.clamp((panel - head) / (0.3 * H), 0.6, 1); }
+    }
+    const f = designT * band(p, -1, 0.075, 0.04);
+    ny += (designNy - ny) * f;
+    zoom *= 1 + (designZoom - 1) * f;
+  }
+  // half-width of the view at the model, sized so the shoe fills ~55% (desktop) / ~78% (phone) of the width
+  const halfW = (isNarrow ? 0.185 : 0.27) / zoom;
+  const halfH = (isNarrow ? 0.20 : 0.15) / zoom;
+  const dist = Math.max(halfW / th, halfH / tv);
   camera.position.set(-nx * dist * th, -ny * dist * tv, dist);
   camera.lookAt(camera.position.x, camera.position.y, 0);
 
@@ -1158,7 +1461,7 @@ render(0);
 try {
   const gltf = await loadModel();
   prepModel(gltf);
-  applyColorway(document.querySelector("input[name=colorway]:checked"));
+  applyColors(window.__haloDesign().colors);
   window.__haloUSDZ = exportUSDZ;
   // warm both shader variants (opaque and fading) so the first fade doesn't stall on a compile
   const all = Object.values(fadeMats).flat();
