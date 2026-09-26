@@ -78,6 +78,8 @@ def main():
     html = (root / "index.html").read_text()
     colorways = [dict(re.findall(r'data-(\w+)="([^"]+)"', tag), id=re.search(r'id="cw-(\w+)"', tag)[1])
                  for tag in re.findall(r'<input type="radio" name="colorway"[^>]*>', html)]
+    # "Design your own" (cw-custom) carries no colors; Android AR falls back to the closest preset for it
+    colorways = [cw for cw in colorways if "upper" in cw]
     assert colorways, "no colorway inputs found in index.html"
 
     base, bin_chunk = read_glb()
