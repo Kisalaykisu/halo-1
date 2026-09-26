@@ -1157,10 +1157,17 @@ async function exportUSDZ(key) {
   if (usdzCache[key]) return usdzCache[key];
   // keep one custom export at a time; each is a few MB of blob
   if (key.startsWith("custom")) for (const k of Object.keys(usdzCache)) if (k.startsWith("custom")) { URL.revokeObjectURL(usdzCache[k]); delete usdzCache[k]; }
+  // snapshot the colors now: the visitor can keep picking while the exporter loads, and the file must match its key
+  const colors = window.__haloDesign().colors;
   const { USDZExporter } = await import("three/addons/exporters/USDZExporter.js");
-  const shoe = model.clone();   // shares geometry and materials, so the colorway comes along
+  const shoe = model.clone();   // shares geometry and materials; the recolorable ones get their own copies below
   shoe.position.set(0, 0, 0);
-  shoe.traverse(o => { o.visible = true; if (o.userData.y0 !== undefined) o.position.y = o.userData.y0; });
+  const own = {};
+  shoe.traverse(o => {
+    o.visible = true; if (o.userData.y0 !== undefined) o.position.y = o.userData.y0;
+    const slot = o.isMesh && Object.keys(CW_SLOTS).find(k => CW_SLOTS[k].includes(o.material.name));
+    if (slot) { o.material = own[o.material.name] ||= o.material.clone(); o.material.color.set(colors[slot]); }
+  });
   const root = new THREE.Scene();
   root.add(shoe);
   root.updateMatrixWorld(true);
