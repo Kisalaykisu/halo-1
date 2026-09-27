@@ -19,6 +19,22 @@ The "+" swatch after the four colorways opens a designer: pick a color for the u
 
 The palette lives in `PARTS` in `index.html`. The "Enter the draw" form shows the current design's name and colors.
 
+## Find my size
+
+In "Enter the draw", sizes can be shown as US men's, US women's, UK or EU (the toggle above the size picker). **Find my size** opens a size finder with two ways in:
+
+- **Foot length:** heel to longest toe, in cm or inches (`10.6`, `10,6`, `10 5/8` all work).
+- **Size you wear:** Nike, Adidas, ASICS, New Balance, Hoka, Brooks or On, in US men's, US women's, UK or EU.
+
+HALO 1 is made for a foot of (US men's + 18) cm, with US women's = men's + 1.5 and UK = US men's − 1. A length within 1.5 mm of a size is that size. Anything between two sizes gets both: the smaller for racing, the larger for everyday comfort. The larger one is filled in by default, which matches the spec's "go up half a size". The answer fills in the size picker, and the size is kept in the link:
+
+```
+?size=9            (US men's; the draw form shows it in whatever sizing is chosen)
+?size=9&sizing=eu  (sizes shown as EU; also usw for US women's, uk)
+```
+
+It combines with the design parameters, e.g. `?cw=dune&size=9`. The other brands' charts are in `BRANDS` in `index.html`.
+
 ## View on your floor (AR)
 
 The hero's "View on your floor" button opens the shoe at real size (27 cm, US M9) in the selected colorway:

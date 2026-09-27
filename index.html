@@ -328,6 +328,57 @@
   .design-colors span { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: 11px; }
   .confirm { font: 500 14px/1.5 var(--body); padding: 12px 14px; border-radius: 6px; background: color-mix(in srgb, var(--lime) 28%, var(--surface)); border: 1px solid var(--line); }
 
+  /* ---------- sizing: US / UK / EU toggle, "Find my size" ---------- */
+  .size-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .size-tools .btn svg { width: 18px; height: 18px; flex: none; }
+  .seg { position: relative; display: inline-flex; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label { display: grid; place-items: center; min-width: 42px; height: 32px; padding: 0 12px; border-radius: 999px; cursor: pointer; font: 500 12px/1 var(--mono); letter-spacing: .08em; color: var(--ink-2); white-space: nowrap; }
+  .seg input:checked + label { background: var(--ink); color: var(--ground); }
+  .seg input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .seg.wide { display: flex; }
+  .seg.wide label { flex: 1 1 0; font: 500 14px/1 var(--body); letter-spacing: 0; }
+  .sf-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; }
+  .sf-dialog h2 { margin: 6px 0 0; outline: none; }
+  .sf-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .sf-body { display: grid; gap: 14px; }
+  .sf-fig { margin: 0; padding: 10px 12px 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+  .sf-fig svg { display: block; width: 100%; height: auto; }
+  .sf-fig .wall { fill: var(--ground-2); stroke: var(--ink); stroke-width: 1.5; }
+  .sf-fig .foot { fill: var(--ground); stroke: var(--ink); stroke-width: 1.5; }
+  .sf-fig .mark { stroke: var(--ink); stroke-width: 1.2; stroke-dasharray: 3 3; }
+  .sf-fig .dimline { stroke: var(--lime-text); stroke-width: 1.6; fill: none; }
+  .sf-fig .dimhead { fill: var(--lime-text); }
+  .sf-fig text { font: 500 10px var(--mono); fill: var(--muted); letter-spacing: .06em; }
+  .sf-fig text.key { fill: var(--ink); }
+  .sf-steps { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: 14px; line-height: 1.45; }
+  .sf-steps li + li { margin-top: 2px; }
+  .sf-field { display: grid; gap: 6px; }
+  .sf-field > span, .sf-field > label { font: 500 11px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .sf-len { display: flex; gap: 8px; align-items: center; }
+  .sf-len input, .sf-field select {
+    width: 100%; min-width: 0; height: 42px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--surface); color: var(--ink); font: 500 16px/1 var(--body);   /* 16px: iOS doesn't zoom in on focus */
+  }
+  .sf-len input { flex: 1 1 auto; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .sf-len input::placeholder { color: var(--muted); }
+  .sf-len .seg { flex: none; }
+  .sf-brand { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 10px; }
+  .sf-result { display: grid; gap: 8px; padding: 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); }
+  .sf-result:focus { outline: none; }
+  .sf-result.found { background: color-mix(in srgb, var(--lime) 22%, var(--surface)); }
+  .sf-result p { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink); }
+  .sf-result p.fine { margin: 0; font-size: 12px; color: var(--muted); }
+  .sf-result p:empty, .sf-size:empty { display: none; }
+  .sf-size { font: 800 40px/.95 var(--display); font-stretch: 80%; font-variation-settings: "wdth" 80; font-variant-numeric: tabular-nums; }
+  .sf-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sf-opts button {
+    height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+    background: var(--ground); color: var(--ink); font: 500 13px/1 var(--body);
+  }
+  .sf-opts button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .sf-dialog form { margin-top: 16px; }
+
   footer { padding: 40px var(--gutter) calc(40px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); background: var(--ground); position: relative; z-index: 2; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center; font: 500 12px/1.6 var(--mono); color: var(--muted); }
   footer button { font: inherit; color: var(--ink-2); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
@@ -371,6 +422,17 @@
   @media (max-width: 440px) {
     /* five swatches plus the AR button don't fit on one line on phones */
     .btn.ar-btn { position: static; margin-top: 12px; }
+  }
+  @media (max-width: 440px) {
+    /* phones: a more compact finder, so the answer shows up sooner */
+    .sf-dialog { padding: 18px; }
+    .sf-dialog h2 { font-size: 26px; }
+    .sf-head { margin-bottom: 12px; }
+    .sf-body { gap: 12px; }
+    .sf-fig { padding: 6px 8px 4px; }
+    .sf-fig svg { max-height: 100px; }
+    .sf-steps { font-size: 13px; }
+    .sf-size { font-size: 34px; }
   }
   @media (max-width: 400px) {
     .dz-head h2 { font-size: 26px; }
@@ -501,6 +563,75 @@
   <form method="dialog"><button class="btn small" type="button" id="arGo" hidden></button><button class="btn ghost small">Close</button></form>
 </dialog>
 
+<dialog class="ar-dialog sf-dialog" id="sfDialog" aria-labelledby="sfTitle">
+  <div class="sf-head">
+    <div>
+      <div class="eyebrow">HALO 1 sizing</div>
+      <h2 id="sfTitle" tabindex="-1" autofocus>Find my size</h2>
+    </div>
+    <div class="seg" role="radiogroup" aria-label="Sizing">
+      <input type="radio" name="sf-sizing" id="sfsc-us" value="us" aria-label="US men's" autocomplete="off" checked><label for="sfsc-us">US M</label>
+      <input type="radio" name="sf-sizing" id="sfsc-usw" value="usw" aria-label="US women's" autocomplete="off"><label for="sfsc-usw">US W</label>
+      <input type="radio" name="sf-sizing" id="sfsc-uk" value="uk" autocomplete="off"><label for="sfsc-uk">UK</label>
+      <input type="radio" name="sf-sizing" id="sfsc-eu" value="eu" autocomplete="off"><label for="sfsc-eu">EU</label>
+    </div>
+  </div>
+  <div class="sf-body">
+    <div class="seg wide" role="radiogroup" aria-label="Find it from">
+      <input type="radio" name="sf-mode" id="sfm-foot" value="foot" autocomplete="off" checked><label for="sfm-foot">Foot length</label>
+      <input type="radio" name="sf-mode" id="sfm-brand" value="brand" autocomplete="off"><label for="sfm-brand">Size you wear</label>
+    </div>
+
+    <div class="sf-body" id="sfFoot">
+      <figure class="sf-fig">
+        <svg viewBox="0 0 300 136" role="img" aria-label="Measuring a foot from above: heel against a wall, a mark at the tip of the longest toe, and the length measured from the wall to the mark.">
+          <rect class="wall" x="12" y="6" width="12" height="104" rx="1"/>
+          <path class="foot" d="M24 62.4C24 45.6 33 37.2 48 36C70 34.8 90 44.4 118 40.8C148 37.2 176 15.6 204 14.4C218 13.8 228 21.6 229.5 33.6C231 55.2 228 81.6 214 97.2C196 109.2 150 103.2 112 94.8C84 88.8 56 92.4 40 85.2C29 80.4 24 73.2 24 62.4Z"/>
+          <ellipse class="foot" cx="246" cy="26.4" rx="14" ry="11.6"/>
+          <ellipse class="foot" cx="244.5" cy="49.8" rx="8.5" ry="7.2"/>
+          <ellipse class="foot" cx="239.5" cy="66" rx="7.5" ry="6.6"/>
+          <ellipse class="foot" cx="233" cy="81.6" rx="6.5" ry="6.1"/>
+          <ellipse class="foot" cx="224" cy="96" rx="5.5" ry="5.5"/>
+          <line class="mark" x1="260" y1="14" x2="260" y2="114"/>
+          <text x="30" y="16">WALL</text>
+          <text x="265" y="16">MARK</text>
+          <path class="dimline" d="M26 114H258"/>
+          <path class="dimhead" d="M24 114l7-4v8z M260 114l-7-4v8z"/>
+          <text class="key" x="142" y="130" text-anchor="middle">HEEL TO LONGEST TOE</text>
+        </svg>
+      </figure>
+      <ol class="sf-steps">
+        <li>Stand on paper with your heel against a wall.</li>
+        <li>Mark the tip of your longest toe.</li>
+        <li>Measure from the wall to the mark. Do both feet and use the longer one.</li>
+      </ol>
+      <div class="sf-field">
+        <label for="sfLen">Foot length</label>
+        <div class="sf-len">
+          <input id="sfLen" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" enterkeyhint="done" placeholder="e.g. 10.6" aria-describedby="sfResult">
+          <div class="seg" role="radiogroup" aria-label="Unit">
+            <input type="radio" name="sf-unit" id="sfu-cm" value="cm" autocomplete="off"><label for="sfu-cm">cm</label>
+            <input type="radio" name="sf-unit" id="sfu-in" value="in" autocomplete="off" checked><label for="sfu-in">in</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sf-brand" id="sfBrand" hidden>
+      <div class="sf-field"><label for="sfBrandSel">Brand</label><select id="sfBrandSel"></select></div>
+      <div class="sf-field"><label for="sfBrandSize" id="sfBrandSizeLbl">US size</label><select id="sfBrandSize"></select></div>
+    </div>
+
+    <div class="sf-result" id="sfResult" role="status" tabindex="-1">
+      <div class="sf-size" id="sfSize"></div>
+      <p id="sfLine"></p>
+      <div class="sf-opts" id="sfOpts" hidden></div>
+      <p class="fine" id="sfFill"></p>
+    </div>
+  </div>
+  <form method="dialog"><button class="btn small">Done</button></form>
+</dialog>
+
 <main class="after">
   <section class="band" id="specs">
     <div class="wrap">
@@ -622,7 +753,19 @@
         <div class="price"><strong>$325</strong><span id="cwLabel">HALO 1 · Frost / Graphite / Signal Lime</span></div>
         <ul class="design-colors" id="drawColors" aria-label="Colors"></ul>
         <fieldset>
-          <legend>US men's size</legend>
+          <legend id="sizeLegend">US men's size</legend>
+          <div class="size-tools">
+            <div class="seg" role="radiogroup" aria-label="Sizing">
+              <input type="radio" name="sizing" id="sc-us" value="us" aria-label="US men's" autocomplete="off" checked><label for="sc-us">US M</label>
+              <input type="radio" name="sizing" id="sc-usw" value="usw" aria-label="US women's" autocomplete="off"><label for="sc-usw">US W</label>
+              <input type="radio" name="sizing" id="sc-uk" value="uk" autocomplete="off"><label for="sc-uk">UK</label>
+              <input type="radio" name="sizing" id="sc-eu" value="eu" autocomplete="off"><label for="sc-eu">EU</label>
+            </div>
+            <button class="btn ghost small" type="button" id="sfOpen" aria-haspopup="dialog" aria-controls="sfDialog">
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M3 15.5 15.5 3 21 8.5 8.5 21 3 15.5Z"/><path d="m7 11.5 2 2M10 8.5l1.5 1.5M13 5.5l2 2M5.5 13l1 1M8.5 10l1 1M11.5 7l1 1"/></svg>
+              <span>Find my size</span>
+            </button>
+          </div>
           <div class="sizes" id="sizes"></div>
         </fieldset>
         <button class="btn" type="submit" id="enterBtn" style="justify-self:start">Enter the draw</button>
@@ -660,6 +803,8 @@
   const sizes = document.getElementById("sizes");
   const list = ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"];
   sizes.innerHTML = list.map((s, i) => `<input type="radio" name="size" id="size-${i}" value="${s}"><label for="size-${i}">${s}</label>`).join("");
+  let scale = "us";           // how sizes are shown: "us" (men's), "usw" (women's), "uk" or "eu". The size values themselves stay US men's.
+  const chosenSize = () => sizes.querySelector("input:checked");
 
   // ---------- designs: the four preset colorways, plus "Design your own" ----------
   // A design is { key, name, colors: { upper, foam, base, trim, accent }, custom }. The 3D model (module script
@@ -715,14 +860,18 @@
     return best;
   };
 
-  // links: ?cw=dune for a preset, ?design=<upper>-<foam>-<base>-<trim>-<laces>&name=… for a custom design
-  function designUrl(d) {
+  // links: ?cw=dune for a preset, ?design=<upper>-<foam>-<base>-<trim>-<laces>&name=… for a custom design,
+  // plus &size=9 (US men's) once a size is picked and &sizing=usw|uk|eu when sizes are shown that way
+  function designUrl(d, withDesign = true) {
     const u = new URL(pageUrl());
-    for (const k of ["cw", "design", "name"]) u.searchParams.delete(k);
-    if (d.custom) {
+    for (const k of ["cw", "design", "name", "size", "sizing"]) u.searchParams.delete(k);
+    if (!withDesign) { /* size only */ } else if (d.custom) {
       u.searchParams.set("design", SLOTS.map(s => d.colors[s].slice(1)).join("-"));
       if (custom.name) u.searchParams.set("name", custom.name);
     } else u.searchParams.set("cw", d.key);
+    const size = chosenSize();
+    if (size) u.searchParams.set("size", size.value);
+    if (scale !== "us") u.searchParams.set("sizing", scale);
     return u.href;
   }
   const params = new URLSearchParams(location.search);
@@ -735,6 +884,10 @@
     const cwParam = document.getElementById("cw-" + params.get("cw"));
     if (cwParam && cwParam.name === "colorway" && cwParam !== customInput) cwParam.checked = true;
   }
+  // ?size=9 preselects a size, ?sizing=usw|uk|eu shows sizes that way
+  const sizeParam = list.indexOf(params.get("size"));
+  if (sizeParam >= 0) document.getElementById("size-" + sizeParam).checked = true;
+  if (["usw", "uk", "eu"].includes(params.get("sizing"))) scale = params.get("sizing");
   // keep the address bar on the current design once it's anything but the plain page, so reloading or
   // opening the page in another browser keeps it (debounced: Safari throttles replaceState)
   let urlTimer;
@@ -742,8 +895,10 @@
     clearTimeout(urlTimer);
     urlTimer = setTimeout(() => {
       const p = new URLSearchParams(location.search), d = current();
-      if (!d.custom && !p.has("cw") && !p.has("design")) return;
-      try { history.replaceState(history.state, "", designUrl(d) + location.hash); } catch (e) { /* not fatal */ }
+      const keepDesign = d.custom || p.has("cw") || p.has("design");
+      const keepSize = chosenSize() || scale !== "us" || p.has("size") || p.has("sizing");
+      if (!keepDesign && !keepSize) return;
+      try { history.replaceState(history.state, "", designUrl(d, keepDesign) + location.hash); } catch (e) { /* not fatal */ }
     }, 300);
   };
 
@@ -940,8 +1095,239 @@
     const v = form.querySelector("input[name=size]:checked");
     if (!v) { note.textContent = "Choose a size first, then enter."; note.className = "fine"; return; }
     note.className = "confirm";
-    note.textContent = `You're in the draw for US M${v.value} in ${current().name}. This is a concept page, so no entry or order was actually placed.`;
+    note.textContent = `You're in the draw for ${sizeName(v.value)} in ${current().name}. This is a concept page, so no entry or order was actually placed.`;
   });
+
+  // ---------- sizing: US / UK / EU, "Find my size" ----------
+  // HALO 1 is graded like most running shoes: made for a foot of (US men's + 18) cm, US women's = men's + 1.5,
+  // UK = US men's - 1 (UK and EU are the same for men and women)
+  const HALO_EU = { 6: 38.5, 6.5: 39, 7: 40, 7.5: 40.5, 8: 41, 8.5: 42, 9: 42.5, 9.5: 43, 10: 44, 10.5: 44.5, 11: 45, 11.5: 45.5, 12: 46, 13: 47.5 };
+  const HALO = list.map(Number).map(us => ({ us, usw: us + 1.5, uk: us - 1, eu: HALO_EU[us], cm: us + 18 }));
+  const SCALE_NAME = { us: "US", usw: "US women's", uk: "UK", eu: "EU" };   // in sentences: "a US women's 10.5"
+  const SCALE_SHORT = { us: "US", usw: "US W", uk: "UK", eu: "EU" };        // on buttons and the big answer
+  const LEGEND = { us: "US men's size", usw: "US women's size", uk: "UK size", eu: "EU size" };
+  // 42.667 -> "42⅔" (adidas and Hoka count EU sizes in thirds)
+  const num = v => {
+    const w = Math.floor(v + 1e-6), f = v - w;
+    return Math.abs(f) < .01 ? String(w) : Math.abs(f - .5) < .01 ? w + ".5" : Math.abs(f - 1 / 3) < .01 ? w + "⅓" : Math.abs(f - 2 / 3) < .01 ? w + "⅔" : String(+v.toFixed(2));
+  };
+  const haloOf = us => HALO.find(h => h.us === +us);
+  const sizeLabel = (h, sc = scale) => SCALE_NAME[sc] + " " + num(h[sc]);
+  const shortLabel = h => SCALE_SHORT[scale] + " " + num(h[scale]);
+  const an = label => (label.startsWith("EU") ? "an " : "a ") + label;   // "a US 9", "a UK 8", "an EU 42.5"
+  // the size as the draw confirmation says it: "US M9" as before, or "US W10.5 (US M9)", "UK 8 (US M9)"
+  function sizeName(us) {
+    const h = haloOf(us);
+    return scale === "us" ? "US M" + us : scale === "usw" ? `US W${num(h.usw)} (US M${us})` : `${sizeLabel(h)} (US M${us})`;
+  }
+
+  // other brands' men's charts (their published size charts): UK and EU per US size. At every US size here
+  // these brands, like HALO 1, are made for a foot of (US + 18) cm, so their UK and EU numbers are what differ.
+  // Women's US sizes are men's + 1.5 (Adidas: + 1).
+  const BRAND_US = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 14, 15];
+  const thirds = us => 36 + (us - 4) * 4 / 3;
+  const BRANDS = [
+    ["Nike", us => us <= 6.5 ? us - .5 : us - 1, [37.5, 38, 38.5, 39, 40, 40.5, 41, 42, 42.5, 43, 44, 44.5, 45, 45.5, 46, 47, 47.5, 48.5, 49.5]],
+    ["Adidas", us => us - .5, thirds, 1],
+    ["ASICS", us => us - 1, [37.5, 38, 39, 39.5, 40, 40.5, 41.5, 42, 42.5, 43.5, 44, 44.5, 45, 46, 46.5, 47, 48, 49, 50.5]],
+    ["New Balance", us => us - .5, [37.5, 38, 38.5, 39.5, 40, 40.5, 41.5, 42, 42.5, 43, 44, 44.5, 45, 45.5, 46.5, 47, 47.5, 49, 50]],
+    ["Hoka", us => us - .5, thirds],
+    ["Brooks", us => us - 1, [37.5, 38, 38.5, 39, 40, 40.5, 41, 42, 42.5, 43, 44, 44.5, 45, 45.5, 46, 47, 47.5, 48.5, 49.5]],
+    ["On", us => us - 1, [37.5, 38, 38.5, 39, 40, 40.5, 41, 42, 42.5, 43, 44, 44.5, 45, 46, 47, 47.5, 48, 49, 50]],
+  ].map(([name, uk, eu, wOff = 1.5]) => ({ name, wOff, rows: BRAND_US.map((us, i) => ({ us, uk: uk(us), eu: typeof eu === "function" ? eu(us) : eu[i], cm: us + 18 })) }));
+  // a brand's sizes in one scale; a label the brand uses twice (Nike UK 6 is both US 6.5 and 7) covers both lengths
+  const BRAND_W = Array.from({ length: 17 }, (_, i) => 5 + i / 2);   // women's US 5 to 13
+  const brandSizes = (b, sc) => {
+    if (sc === "usw") return BRAND_W.map(w => ({ label: num(w), cm: w - b.wOff + 18, twice: false }));
+    const out = [];
+    for (const r of b.rows) {
+      const label = num(r[sc]), o = out.find(x => x.label === label);
+      if (o) o.cms.push(r.cm); else out.push({ label, cms: [r.cm] });
+    }
+    return out.map(o => ({ label: o.label, cm: o.cms.reduce((a, c) => a + c, 0) / o.cms.length, twice: o.cms.length > 1 }));
+  };
+
+  // foot length (cm) -> HALO size: within 1.5 mm of a size's length is that size, otherwise between two
+  function haloFor(cm) {
+    const near = HALO.reduce((a, h) => Math.abs(h.cm - cm) < Math.abs(a.cm - cm) ? h : a);
+    if (Math.abs(near.cm - cm) <= .15) return { size: near };
+    if (cm < HALO[0].cm) return { below: HALO[0] };
+    if (cm > HALO[HALO.length - 1].cm) return { above: HALO[HALO.length - 1] };
+    const i = HALO.findIndex(h => h.cm > cm);
+    return { down: HALO[i - 1], up: HALO[i] };
+  }
+
+  const sizeLegend = document.getElementById("sizeLegend");
+  const sfDialog = document.getElementById("sfDialog"), sfLen = document.getElementById("sfLen");
+  const sfFoot = document.getElementById("sfFoot"), sfBrand = document.getElementById("sfBrand");
+  const sfBrandSel = document.getElementById("sfBrandSel"), sfBrandSize = document.getElementById("sfBrandSize");
+  const sfResult = document.getElementById("sfResult"), sfSize = document.getElementById("sfSize"), sfLine = document.getElementById("sfLine");
+  const sfOpts = document.getElementById("sfOpts"), sfFill = document.getElementById("sfFill");
+  const radioVal = name => document.querySelector(`input[name=${name}]:checked`).value;
+  let unitTouched = false, brandCm = null, brandLabel = "", between = null;   // between: { key, pick: "up" | "down" }
+
+  // the size picker and both toggles show the current scale
+  function showScale() {
+    for (const n of ["sizing", "sf-sizing"]) for (const r of document.getElementsByName(n)) r.checked = r.value === scale;
+    sizeLegend.textContent = LEGEND[scale];
+    for (const r of sizes.querySelectorAll("input")) r.nextElementSibling.textContent = num(haloOf(r.value)[scale]);
+    // a new visitor measuring for US sizes probably has a tape in inches, UK and EU in cm
+    if (!unitTouched && !sfLen.value) setUnit(scale.startsWith("us") ? "in" : "cm");
+    fillBrandSizes();
+  }
+  function setScale(sc) {
+    if (sc === scale) return;
+    scale = sc;
+    showScale();
+    render(false);
+    syncUrl();
+  }
+  for (const n of ["sizing", "sf-sizing"]) for (const r of document.getElementsByName(n)) r.addEventListener("change", () => setScale(r.value));
+
+  // pick a size in the draw form, as if the visitor had tapped it
+  function pickSize(h) {
+    const r = sizes.querySelector(`input[value="${h.us}"]`);
+    if (r.checked) return;
+    r.checked = true;
+    r.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+  sizes.addEventListener("change", syncUrl);
+
+  // --- foot length ---
+  const setUnit = u => {
+    for (const r of document.getElementsByName("sf-unit")) r.checked = r.value === u;
+    sfLen.placeholder = u === "cm" ? "e.g. 27" : "e.g. 10.6";
+  };
+  // "10.6", "10,6", "10 5/8", "10⅝"
+  const FRAC = { "¼": .25, "½": .5, "¾": .75, "⅛": .125, "⅜": .375, "⅝": .625, "⅞": .875 };
+  function parseLen(s) {
+    const m = s.trim().replace(",", ".").match(/^(\d+(?:\.\d+)?)?\s*(?:(\d+)\s*\/\s*(\d+)|([¼½¾⅛⅜⅝⅞]))?$/);
+    if (!m || (!m[1] && !m[2] && !m[4])) return NaN;
+    return (+m[1] || 0) + (m[2] ? m[2] / m[3] : 0) + (m[4] ? FRAC[m[4]] : 0);
+  }
+  const fmtLen = (cm, u) => u === "cm" ? `${+cm.toFixed(1)} cm` : `${+(cm / 2.54).toFixed(2)} in`;
+  sfLen.addEventListener("input", () => render(true));
+  sfLen.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sfLen.blur(); } });
+  for (const r of document.getElementsByName("sf-unit")) r.addEventListener("change", () => {
+    unitTouched = true;
+    // convert what's typed, so switching units doesn't change the answer
+    const v = parseLen(sfLen.value);
+    if (v > 0) sfLen.value = r.value === "cm" ? String(+(v * 2.54).toFixed(1)) : String(+(v / 2.54).toFixed(2));
+    setUnit(r.value);
+    render(true);
+  });
+
+  // --- size you already wear ---
+  sfBrandSel.innerHTML = `<option value="">Choose a brand</option>` + BRANDS.map((b, i) => `<option value="${i}">${b.name}</option>`).join("");
+  // keep: after a brand change, keep the same size label ("I picked the wrong brand"); after a sizing change,
+  // keep the same length (it's the same shoe, shown another way)
+  function fillBrandSizes(keep = "length") {
+    const b = BRANDS[sfBrandSel.value];
+    document.getElementById("sfBrandSizeLbl").textContent = (b ? b.name + " " : "") + SCALE_NAME[scale] + " size";
+    if (!b) { sfBrandSize.innerHTML = `<option value="">Choose a brand first</option>`; sfBrandSize.disabled = true; return; }
+    const opts = brandSizes(b, scale);
+    sfBrandSize.disabled = false;
+    sfBrandSize.innerHTML = `<option value="">Choose</option>` + opts.map(o => `<option value="${o.cm}"${o.twice ? " data-twice" : ""}>${o.label}</option>`).join("");
+    if (brandCm == null) return;
+    let best = keep === "label" && [...sfBrandSize.options].find(o => o.value && o.textContent === brandLabel);
+    // otherwise the nearest length (a label that covers two lengths sits between them)
+    if (!best) for (const o of sfBrandSize.options) if (o.value && (!best || Math.abs(o.value - brandCm) < Math.abs(best.value - brandCm))) best = o;
+    best.selected = true;
+    brandCm = +best.value; brandLabel = best.textContent;
+  }
+  sfBrandSel.addEventListener("change", () => { fillBrandSizes("label"); render(true); });
+  sfBrandSize.addEventListener("change", () => {
+    brandCm = sfBrandSize.value ? +sfBrandSize.value : null; brandLabel = sfBrandSize.selectedOptions[0].textContent;
+    render(true);
+  });
+
+  for (const r of document.getElementsByName("sf-mode")) r.addEventListener("change", () => {
+    sfFoot.hidden = r.value !== "foot"; sfBrand.hidden = r.value !== "brand";
+    render(true);
+  });
+
+  // the answer: one size, or two when between sizes (racing vs everyday), or out of range.
+  // fill: put the answer in the size picker (only when the visitor changed something in the finder)
+  function render(fill) {
+    const mode = radioVal("sf-mode"), unit = radioVal("sf-unit");
+    let cm = null, prompt = "", from = "", twice = false;
+    if (mode === "foot") {
+      const v = parseLen(sfLen.value);
+      if (!sfLen.value.trim()) prompt = "Enter your foot length to see your HALO 1 size.";
+      else if (!(v > 0)) prompt = `Enter a number, like ${unit === "cm" ? "27 or 26.5" : "10.6 or 10 5/8"}.`;
+      else {
+        cm = unit === "cm" ? v : v * 2.54;
+        if (cm < 15 || cm > 40) {
+          const other = unit === "cm" ? "in" : "cm", otherCm = unit === "cm" ? v * 2.54 : v;
+          prompt = `${fmtLen(cm, unit)} doesn't look like an adult foot.` + (otherCm >= 15 && otherCm <= 40 ? ` Measured in ${other === "in" ? "inches" : "cm"}? Switch to ${other}.` : "");
+          cm = null;
+        } else from = `with a ${fmtLen(cm, unit)} foot`;
+      }
+    } else {
+      const b = BRANDS[sfBrandSel.value];
+      if (!b) prompt = "Pick a brand and the size you wear in it.";
+      else if (!sfBrandSize.value) prompt = `Pick the ${SCALE_NAME[scale]} size you wear in ${b.name}.`;
+      else {
+        const o = sfBrandSize.selectedOptions[0];
+        cm = +o.value; from = `${b.name} ${SCALE_NAME[scale]} ${o.textContent}`; twice = "twice" in o.dataset;
+      }
+    }
+
+    sfSize.textContent = sfFill.textContent = "";
+    sfOpts.hidden = true; sfOpts.replaceChildren();
+    sfResult.classList.remove("found");
+    if (cm == null) { sfLine.textContent = prompt; between = null; return; }
+
+    const r = haloFor(cm), foot = mode === "foot";
+    let pick = null;
+    if (r.size) {
+      pick = r.size;
+      const same = !foot && from.endsWith(" " + num(pick[scale]));
+      sfLine.textContent = foot ? `HALO 1 runs true to size, so ${from} you're ${an(sizeLabel(pick))}.`
+        : same ? `HALO 1 runs true to size, so you're ${an(sizeLabel(pick))}, the same as in ${BRANDS[sfBrandSel.value].name}.`
+        : `HALO 1 runs true to size, so you're ${an(sizeLabel(pick))}, the same length as ${from}.`;
+      between = null;
+    } else if (r.down) {
+      const key = r.down.us + "-" + r.up.us;
+      if (!between || between.key !== key) between = { key, pick: "up" };   // the spec's advice: up half a size
+      // reopening the finder: show whichever of the two the picker already has
+      const had = chosenSize();
+      if (!fill && had && (+had.value === r.up.us || +had.value === r.down.us)) between.pick = +had.value === r.up.us ? "up" : "down";
+      pick = between.pick === "up" ? r.up : r.down;
+      sfLine.textContent = (twice ? `${from} covers two lengths, so you're` : "You're") + ` between ${sizeLabel(r.down)} and ${sizeLabel(r.up)}. For racing, go down to ${sizeLabel(r.down)} for a locked-in fit; for everyday comfort, go up to ${sizeLabel(r.up)}.`;
+      for (const [which, h, what] of [["up", r.up, "Everyday comfort"], ["down", r.down, "Racing"]]) {
+        const btn = document.createElement("button");
+        btn.type = "button"; btn.textContent = `${what} · ${shortLabel(h)}`;
+        btn.setAttribute("aria-pressed", String(which === between.pick));
+        btn.addEventListener("click", () => { between.pick = which; render(true); sfOpts.querySelector("[aria-pressed=true]").focus(); });
+        sfOpts.append(btn);
+      }
+      sfOpts.hidden = false;
+    } else {
+      between = null;
+      const h = r.below || r.above;
+      sfLine.textContent = r.below
+        ? `HALO 1 starts at ${sizeLabel(h)}, made for a ${fmtLen(h.cm, foot ? unit : "cm")} foot, so it would be too long ${foot ? "on you" : "if you wear " + from}.`
+        : `HALO 1 goes up to ${sizeLabel(h)}, made for a ${fmtLen(h.cm, foot ? unit : "cm")} foot, so it would be too short ${foot ? "for you" : "if you wear " + from}.`;
+      return;
+    }
+    sfSize.textContent = shortLabel(pick);
+    sfResult.classList.add("found");
+    if (fill) pickSize(pick);
+    const sel = chosenSize();
+    if (sel && +sel.value === pick.us) sfFill.textContent = `${shortLabel(pick)} is selected in the size picker.`;
+    else if (!between) {
+      // the picker was changed by hand since: offer to put the answer back
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.textContent = "Use " + shortLabel(pick);
+      btn.addEventListener("click", () => { pickSize(pick); render(false); sfResult.focus(); });
+      sfOpts.append(btn); sfOpts.hidden = false;
+    }
+  }
+
+  document.getElementById("sfOpen").addEventListener("click", () => { render(false); sfDialog.showModal(); });
+  showScale();
+  render(false);
 
   // spec profile drawn from the same functions as the Blender model
   const L = 0.285;
