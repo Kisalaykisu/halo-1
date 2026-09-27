@@ -340,7 +340,7 @@
   .seg.wide label { flex: 1 1 0; font: 500 14px/1 var(--body); letter-spacing: 0; }
   .sf-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; }
   .sf-dialog h2 { margin: 6px 0 0; outline: none; }
-  .sf-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .sf-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
   .sf-body { display: grid; gap: 14px; }
   .sf-fig { margin: 0; padding: 10px 12px 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
   .sf-fig svg { display: block; width: 100%; height: auto; }
@@ -570,7 +570,8 @@
       <h2 id="sfTitle" tabindex="-1" autofocus>Find my size</h2>
     </div>
     <div class="seg" role="radiogroup" aria-label="Sizing">
-      <input type="radio" name="sf-sizing" id="sfsc-us" value="us" autocomplete="off" checked><label for="sfsc-us">US</label>
+      <input type="radio" name="sf-sizing" id="sfsc-us" value="us" aria-label="US men's" autocomplete="off" checked><label for="sfsc-us">US M</label>
+      <input type="radio" name="sf-sizing" id="sfsc-usw" value="usw" aria-label="US women's" autocomplete="off"><label for="sfsc-usw">US W</label>
       <input type="radio" name="sf-sizing" id="sfsc-uk" value="uk" autocomplete="off"><label for="sfsc-uk">UK</label>
       <input type="radio" name="sf-sizing" id="sfsc-eu" value="eu" autocomplete="off"><label for="sfsc-eu">EU</label>
     </div>
@@ -755,7 +756,8 @@
           <legend id="sizeLegend">US men's size</legend>
           <div class="size-tools">
             <div class="seg" role="radiogroup" aria-label="Sizing">
-              <input type="radio" name="sizing" id="sc-us" value="us" autocomplete="off" checked><label for="sc-us">US</label>
+              <input type="radio" name="sizing" id="sc-us" value="us" aria-label="US men's" autocomplete="off" checked><label for="sc-us">US M</label>
+              <input type="radio" name="sizing" id="sc-usw" value="usw" aria-label="US women's" autocomplete="off"><label for="sc-usw">US W</label>
               <input type="radio" name="sizing" id="sc-uk" value="uk" autocomplete="off"><label for="sc-uk">UK</label>
               <input type="radio" name="sizing" id="sc-eu" value="eu" autocomplete="off"><label for="sc-eu">EU</label>
             </div>
@@ -801,7 +803,7 @@
   const sizes = document.getElementById("sizes");
   const list = ["6","6.5","7","7.5","8","8.5","9","9.5","10","10.5","11","11.5","12","13"];
   sizes.innerHTML = list.map((s, i) => `<input type="radio" name="size" id="size-${i}" value="${s}"><label for="size-${i}">${s}</label>`).join("");
-  let scale = "us";           // how sizes are shown: "us", "uk" or "eu". The size values themselves stay US men's.
+  let scale = "us";           // how sizes are shown: "us" (men's), "usw" (women's), "uk" or "eu". The size values themselves stay US men's.
   const chosenSize = () => sizes.querySelector("input:checked");
 
   // ---------- designs: the four preset colorways, plus "Design your own" ----------
@@ -859,7 +861,7 @@
   };
 
   // links: ?cw=dune for a preset, ?design=<upper>-<foam>-<base>-<trim>-<laces>&name=… for a custom design,
-  // plus &size=9 (US men's) once a size is picked and &sizing=uk|eu when sizes are shown that way
+  // plus &size=9 (US men's) once a size is picked and &sizing=usw|uk|eu when sizes are shown that way
   function designUrl(d, withDesign = true) {
     const u = new URL(pageUrl());
     for (const k of ["cw", "design", "name", "size", "sizing"]) u.searchParams.delete(k);
@@ -882,10 +884,10 @@
     const cwParam = document.getElementById("cw-" + params.get("cw"));
     if (cwParam && cwParam.name === "colorway" && cwParam !== customInput) cwParam.checked = true;
   }
-  // ?size=9 preselects a size, ?sizing=uk|eu shows sizes that way
+  // ?size=9 preselects a size, ?sizing=usw|uk|eu shows sizes that way
   const sizeParam = list.indexOf(params.get("size"));
   if (sizeParam >= 0) document.getElementById("size-" + sizeParam).checked = true;
-  if (["uk", "eu"].includes(params.get("sizing"))) scale = params.get("sizing");
+  if (["usw", "uk", "eu"].includes(params.get("sizing"))) scale = params.get("sizing");
   // keep the address bar on the current design once it's anything but the plain page, so reloading or
   // opening the page in another browser keeps it (debounced: Safari throttles replaceState)
   let urlTimer;
@@ -1097,11 +1099,13 @@
   });
 
   // ---------- sizing: US / UK / EU, "Find my size" ----------
-  // HALO 1 is graded like most running shoes: made for a foot of (US men's + 18) cm, UK = US - 1
+  // HALO 1 is graded like most running shoes: made for a foot of (US men's + 18) cm, US women's = men's + 1.5,
+  // UK = US men's - 1 (UK and EU are the same for men and women)
   const HALO_EU = { 6: 38.5, 6.5: 39, 7: 40, 7.5: 40.5, 8: 41, 8.5: 42, 9: 42.5, 9.5: 43, 10: 44, 10.5: 44.5, 11: 45, 11.5: 45.5, 12: 46, 13: 47.5 };
-  const HALO = list.map(Number).map(us => ({ us, uk: us - 1, eu: HALO_EU[us], cm: us + 18 }));
-  const SCALE_NAME = { us: "US", uk: "UK", eu: "EU" };
-  const LEGEND = { us: "US men's size", uk: "UK men's size", eu: "EU size" };
+  const HALO = list.map(Number).map(us => ({ us, usw: us + 1.5, uk: us - 1, eu: HALO_EU[us], cm: us + 18 }));
+  const SCALE_NAME = { us: "US", usw: "US women's", uk: "UK", eu: "EU" };   // in sentences: "a US women's 10.5"
+  const SCALE_SHORT = { us: "US", usw: "US W", uk: "UK", eu: "EU" };        // on buttons and the big answer
+  const LEGEND = { us: "US men's size", usw: "US women's size", uk: "UK size", eu: "EU size" };
   // 42.667 -> "42⅔" (adidas and Hoka count EU sizes in thirds)
   const num = v => {
     const w = Math.floor(v + 1e-6), f = v - w;
@@ -1109,25 +1113,32 @@
   };
   const haloOf = us => HALO.find(h => h.us === +us);
   const sizeLabel = (h, sc = scale) => SCALE_NAME[sc] + " " + num(h[sc]);
+  const shortLabel = h => SCALE_SHORT[scale] + " " + num(h[scale]);
   const an = label => (label.startsWith("EU") ? "an " : "a ") + label;   // "a US 9", "a UK 8", "an EU 42.5"
-  // the size as the draw confirmation says it: "US M9" as before, or "UK 8 (US M9)"
-  function sizeName(us) { return scale === "us" ? "US M" + us : `${sizeLabel(haloOf(us))} (US M${us})`; }
+  // the size as the draw confirmation says it: "US M9" as before, or "US W10.5 (US M9)", "UK 8 (US M9)"
+  function sizeName(us) {
+    const h = haloOf(us);
+    return scale === "us" ? "US M" + us : scale === "usw" ? `US W${num(h.usw)} (US M${us})` : `${sizeLabel(h)} (US M${us})`;
+  }
 
   // other brands' men's charts (their published size charts): UK and EU per US size. At every US size here
   // these brands, like HALO 1, are made for a foot of (US + 18) cm, so their UK and EU numbers are what differ.
+  // Women's US sizes are men's + 1.5 (Adidas: + 1).
   const BRAND_US = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 14, 15];
   const thirds = us => 36 + (us - 4) * 4 / 3;
   const BRANDS = [
     ["Nike", us => us <= 6.5 ? us - .5 : us - 1, [37.5, 38, 38.5, 39, 40, 40.5, 41, 42, 42.5, 43, 44, 44.5, 45, 45.5, 46, 47, 47.5, 48.5, 49.5]],
-    ["Adidas", us => us - .5, thirds],
+    ["Adidas", us => us - .5, thirds, 1],
     ["ASICS", us => us - 1, [37.5, 38, 39, 39.5, 40, 40.5, 41.5, 42, 42.5, 43.5, 44, 44.5, 45, 46, 46.5, 47, 48, 49, 50.5]],
     ["New Balance", us => us - .5, [37.5, 38, 38.5, 39.5, 40, 40.5, 41.5, 42, 42.5, 43, 44, 44.5, 45, 45.5, 46.5, 47, 47.5, 49, 50]],
     ["Hoka", us => us - .5, thirds],
     ["Brooks", us => us - 1, [37.5, 38, 38.5, 39, 40, 40.5, 41, 42, 42.5, 43, 44, 44.5, 45, 45.5, 46, 47, 47.5, 48.5, 49.5]],
     ["On", us => us - 1, [37.5, 38, 38.5, 39, 40, 40.5, 41, 42, 42.5, 43, 44, 44.5, 45, 46, 47, 47.5, 48, 49, 50]],
-  ].map(([name, uk, eu]) => ({ name, rows: BRAND_US.map((us, i) => ({ us, uk: uk(us), eu: typeof eu === "function" ? eu(us) : eu[i], cm: us + 18 })) }));
+  ].map(([name, uk, eu, wOff = 1.5]) => ({ name, wOff, rows: BRAND_US.map((us, i) => ({ us, uk: uk(us), eu: typeof eu === "function" ? eu(us) : eu[i], cm: us + 18 })) }));
   // a brand's sizes in one scale; a label the brand uses twice (Nike UK 6 is both US 6.5 and 7) covers both lengths
+  const BRAND_W = Array.from({ length: 17 }, (_, i) => 5 + i / 2);   // women's US 5 to 13
   const brandSizes = (b, sc) => {
+    if (sc === "usw") return BRAND_W.map(w => ({ label: num(w), cm: w - b.wOff + 18, twice: false }));
     const out = [];
     for (const r of b.rows) {
       const label = num(r[sc]), o = out.find(x => x.label === label);
@@ -1153,7 +1164,7 @@
   const sfResult = document.getElementById("sfResult"), sfSize = document.getElementById("sfSize"), sfLine = document.getElementById("sfLine");
   const sfOpts = document.getElementById("sfOpts"), sfFill = document.getElementById("sfFill");
   const radioVal = name => document.querySelector(`input[name=${name}]:checked`).value;
-  let unitTouched = false, brandCm = null, between = null;   // between: { key, pick: "up" | "down" }
+  let unitTouched = false, brandCm = null, brandLabel = "", between = null;   // between: { key, pick: "up" | "down" }
 
   // the size picker and both toggles show the current scale
   function showScale() {
@@ -1161,7 +1172,7 @@
     sizeLegend.textContent = LEGEND[scale];
     for (const r of sizes.querySelectorAll("input")) r.nextElementSibling.textContent = num(haloOf(r.value)[scale]);
     // a new visitor measuring for US sizes probably has a tape in inches, UK and EU in cm
-    if (!unitTouched && !sfLen.value) setUnit(scale === "us" ? "in" : "cm");
+    if (!unitTouched && !sfLen.value) setUnit(scale.startsWith("us") ? "in" : "cm");
     fillBrandSizes();
   }
   function setScale(sc) {
@@ -1208,22 +1219,27 @@
 
   // --- size you already wear ---
   sfBrandSel.innerHTML = `<option value="">Choose a brand</option>` + BRANDS.map((b, i) => `<option value="${i}">${b.name}</option>`).join("");
-  function fillBrandSizes() {
+  // keep: after a brand change, keep the same size label ("I picked the wrong brand"); after a sizing change,
+  // keep the same length (it's the same shoe, shown another way)
+  function fillBrandSizes(keep = "length") {
     const b = BRANDS[sfBrandSel.value];
     document.getElementById("sfBrandSizeLbl").textContent = (b ? b.name + " " : "") + SCALE_NAME[scale] + " size";
     if (!b) { sfBrandSize.innerHTML = `<option value="">Choose a brand first</option>`; sfBrandSize.disabled = true; return; }
     const opts = brandSizes(b, scale);
     sfBrandSize.disabled = false;
     sfBrandSize.innerHTML = `<option value="">Choose</option>` + opts.map(o => `<option value="${o.cm}"${o.twice ? " data-twice" : ""}>${o.label}</option>`).join("");
-    // keep the same size selected across scales and brands (the nearest length, if that label covers two)
-    if (brandCm != null) {
-      let best = null;
-      for (const o of sfBrandSize.options) if (o.value && (!best || Math.abs(o.value - brandCm) < Math.abs(best.value - brandCm))) best = o;
-      best.selected = true;
-    }
+    if (brandCm == null) return;
+    let best = keep === "label" && [...sfBrandSize.options].find(o => o.value && o.textContent === brandLabel);
+    // otherwise the nearest length (a label that covers two lengths sits between them)
+    if (!best) for (const o of sfBrandSize.options) if (o.value && (!best || Math.abs(o.value - brandCm) < Math.abs(best.value - brandCm))) best = o;
+    best.selected = true;
+    brandCm = +best.value; brandLabel = best.textContent;
   }
-  sfBrandSel.addEventListener("change", () => { fillBrandSizes(); render(true); });
-  sfBrandSize.addEventListener("change", () => { brandCm = sfBrandSize.value ? +sfBrandSize.value : null; render(true); });
+  sfBrandSel.addEventListener("change", () => { fillBrandSizes("label"); render(true); });
+  sfBrandSize.addEventListener("change", () => {
+    brandCm = sfBrandSize.value ? +sfBrandSize.value : null; brandLabel = sfBrandSize.selectedOptions[0].textContent;
+    render(true);
+  });
 
   for (const r of document.getElementsByName("sf-mode")) r.addEventListener("change", () => {
     sfFoot.hidden = r.value !== "foot"; sfBrand.hidden = r.value !== "brand";
@@ -1281,7 +1297,7 @@
       sfLine.textContent = (twice ? `${from} covers two lengths, so you're` : "You're") + ` between ${sizeLabel(r.down)} and ${sizeLabel(r.up)}. For racing, go down to ${sizeLabel(r.down)} for a locked-in fit; for everyday comfort, go up to ${sizeLabel(r.up)}.`;
       for (const [which, h, what] of [["up", r.up, "Everyday comfort"], ["down", r.down, "Racing"]]) {
         const btn = document.createElement("button");
-        btn.type = "button"; btn.textContent = `${what} · ${sizeLabel(h)}`;
+        btn.type = "button"; btn.textContent = `${what} · ${shortLabel(h)}`;
         btn.setAttribute("aria-pressed", String(which === between.pick));
         btn.addEventListener("click", () => { between.pick = which; render(true); sfOpts.querySelector("[aria-pressed=true]").focus(); });
         sfOpts.append(btn);
@@ -1295,15 +1311,15 @@
         : `HALO 1 goes up to ${sizeLabel(h)}, made for a ${fmtLen(h.cm, foot ? unit : "cm")} foot, so it would be too short ${foot ? "for you" : "if you wear " + from}.`;
       return;
     }
-    sfSize.textContent = sizeLabel(pick);
+    sfSize.textContent = shortLabel(pick);
     sfResult.classList.add("found");
     if (fill) pickSize(pick);
     const sel = chosenSize();
-    if (sel && +sel.value === pick.us) sfFill.textContent = `${sizeLabel(pick)} is selected in the size picker.`;
+    if (sel && +sel.value === pick.us) sfFill.textContent = `${shortLabel(pick)} is selected in the size picker.`;
     else if (!between) {
       // the picker was changed by hand since: offer to put the answer back
       const btn = document.createElement("button");
-      btn.type = "button"; btn.textContent = "Use " + sizeLabel(pick);
+      btn.type = "button"; btn.textContent = "Use " + shortLabel(pick);
       btn.addEventListener("click", () => { pickSize(pick); render(false); sfResult.focus(); });
       sfOpts.append(btn); sfOpts.hidden = false;
     }
